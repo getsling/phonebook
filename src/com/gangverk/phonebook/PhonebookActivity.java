@@ -12,6 +12,6 @@ public class PhonebookActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         int a = 2;
-        Log.d(LOG_TAG,String.format("the number was %d", a));
+        Log.d(LOG_TAG,String.format("the nusmber was %d", a));
     }
 }
