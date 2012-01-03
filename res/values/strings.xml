@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, PhonebookActivity!</string>
-    <string name="app_name">Phonebook</string>
+    <string name="app_name">Símaskrá Mannvits</string>
+    <string name="expandable_list_sample_action">Test</string>
+    <string name="txtName">Nafn</string>
+    <string name="txtTitle">Starfsheiti</string>
+    <string name="txtEmail">Netfang</string>
+    <string name="txtDivisionWorkplace">Deild / Vinnustaður</string>
 </resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:descendantFocusability="blocksDescendants"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"> 
+    <RelativeLayout
+        android:id="@+id/relativeLayoutLeft"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:padding="5dip">
+        <TextView
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:id="@+id/textLarge" 
+            android:layout_marginLeft="2dip">
+        </TextView> 
+        <TextView
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:id="@+id/textSmall1" 
+            android:layout_below="@+id/textLarge"
+            android:layout_marginLeft="2dip">
+        </TextView>
+        <com.gangverk.phonebook.DontPressWithParentImgButton
+            android:layout_width="50dip"
+            android:layout_height="50dip"
+            android:src="@drawable/phone"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:scaleType="center" android:id="@+id/btnPhone" /> 
+    </RelativeLayout>
+</LinearLayout>   
