@@ -126,7 +126,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		myOutput.flush();
 		myOutput.close();
 		myInput.close();
-
 	}
 
 	public void openDataBase() throws SQLException{

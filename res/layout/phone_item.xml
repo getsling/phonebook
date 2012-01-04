@@ -4,12 +4,14 @@
     android:descendantFocusability="blocksDescendants"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"> 
+
     <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/relativeLayoutLeft"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:padding="5dip">
+        android:layout_height="wrap_content"
+        android:padding="5dip" >
+
         <TextView
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_height="wrap_content"
@@ -29,9 +31,9 @@
         <com.gangverk.phonebook.DontPressWithParentImgButton
             android:layout_width="50dip"
             android:layout_height="50dip"
-            android:src="@drawable/phone"
+            android:src="@drawable/call_contact"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:scaleType="center" android:id="@+id/btnPhone" /> 
+            android:scaleType="center" android:id="@+id/btnCall" /> 
     </RelativeLayout>
 </LinearLayout>   
