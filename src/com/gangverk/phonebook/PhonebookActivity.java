@@ -92,7 +92,7 @@ public class PhonebookActivity extends ListActivity {
 		@Override
 		public void onClick(View v) {
 			final int position = getListView().getPositionForView(v);
-			View parentListView = getListView();
+			View parentListView = getListView().getChildAt(position);
 			if (position != ListView.INVALID_POSITION) {
 				try {
 					TextView number = (TextView) parentListView.findViewById(R.id.textSmall1);
