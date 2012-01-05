@@ -6,4 +6,6 @@
     <string name="txtTitle">Starfsheiti</string>
     <string name="txtEmail">Netfang</string>
     <string name="txtDivisionWorkplace">Deild / Vinnustaður</string>
+    <string name="txtCallContact">Hringja</string>
+    <string name="profilePicture">Prófílmynd</string>
 </resources>

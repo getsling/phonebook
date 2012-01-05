@@ -2,11 +2,11 @@ package com.gangverk.phonebook;
 
 import android.app.Activity;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.TextView;
 
 public class SingleEmployee extends Activity {
-	private DatabaseHelper myDB = new DatabaseHelper(this);
 	private Cursor c;
 
 	@Override
@@ -14,22 +14,20 @@ public class SingleEmployee extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.single_employee);
 		Bundle extras = getIntent().getExtras();
-		long userID = extras.getLong(DatabaseHelper.TABLE_ID); 
-		myDB.openDataBase();
-		c = myDB.fetchEmployees(userID);
-		startManagingCursor(c);
-		TextView tv_name = (TextView)findViewById(R.id.name);
-		TextView tv_title = (TextView)findViewById(R.id.title);
-		TextView tv_email = (TextView)findViewById(R.id.email);
-		TextView tv_divisionWorkplace = (TextView)findViewById(R.id.divisionWorkplace);
-		tv_name.setText(c.getString(c.getColumnIndexOrThrow(DatabaseHelper.EMPLOYEE_KEY_NAME.split("\\.")[1])));
-		tv_title.setText(c.getString(c.getColumnIndexOrThrow(DatabaseHelper.EMPLOYEE_KEY_TITLE.split("\\.")[1])));
-		tv_email.setText(c.getString(c.getColumnIndexOrThrow(DatabaseHelper.EMPLOYEE_KEY_EMAIL.split("\\.")[1])));
-		CharSequence divisionWorkplace = c.getString(c.getColumnIndexOrThrow(DatabaseHelper.DIVISION_KEY_NAME.split("\\.")[1])) + " / " + c.getString(c.getColumnIndexOrThrow(DatabaseHelper.WORKPLACE_KEY_ADDRESS.split("\\.")[1]));
+		long userID = extras.getLong(ContactsProvider._ID); 
+
+		Uri allContacts = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts/" + userID);
+		c = managedQuery(allContacts, null, null, null, null);
+		c.moveToFirst();
+		TextView tv_name = (TextView)findViewById(R.id.singleName);
+		TextView tv_title = (TextView)findViewById(R.id.singleTitle);
+		TextView tv_email = (TextView)findViewById(R.id.singleEmail);
+		TextView tv_divisionWorkplace = (TextView)findViewById(R.id.singleDivisionWorkplace);
+		
+		tv_name.setText(c.getString(c.getColumnIndexOrThrow(ContactsProvider.NAME)));
+		tv_title.setText(c.getString(c.getColumnIndexOrThrow(ContactsProvider.TITLE)));
+		tv_email.setText(c.getString(c.getColumnIndexOrThrow(ContactsProvider.EMAIL)));
+		CharSequence divisionWorkplace = c.getString(c.getColumnIndexOrThrow(ContactsProvider.DIVISION)) + " / " + c.getString(c.getColumnIndexOrThrow(ContactsProvider.WORKPLACE));
 		tv_divisionWorkplace.setText(divisionWorkplace);
-		myDB.close();
-
-
-		//Log.d("ID notanda",String.valueOf(extras.getLong(DatabaseHelper.TABLE_ID)));
 	}
 }

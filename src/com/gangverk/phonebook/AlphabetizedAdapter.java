@@ -28,7 +28,7 @@ public class AlphabetizedAdapter extends PhoneAdapter implements SectionIndexer{
 	public AlphabetizedAdapter(Context context, int layout, Cursor c,String[] from, int[] to, int flags) {
 		super(context, layout, c, from, to, flags);
 		this.mContext = context;
-		indexer = new AlphabetIndexer(c, c.getColumnIndexOrThrow(DatabaseHelper.EMPLOYEE_KEY_NAME.split("\\.")[1]), "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+		indexer = new AlphabetIndexer(c, c.getColumnIndexOrThrow(ContactsProvider.NAME), " ABCDEFGHIJKLMNOPQRSTUVWXYZÞÆÖ");
 		sectionToPosition = new TreeMap<Integer, Integer>(); //use a TreeMap because we are going to iterate over its keys in sorted order
 		sectionToOffset = new HashMap<Integer, Integer>();
 
