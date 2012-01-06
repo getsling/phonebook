@@ -24,7 +24,7 @@ public class AlphabetizedAdapter extends PhoneAdapter implements SectionIndexer{
 	private Map<Integer, Integer> sectionToOffset;
 	private Map<Integer, Integer> sectionToPosition;
 	Context mContext;
-	
+
 	public AlphabetizedAdapter(Context context, int layout, Cursor c,String[] from, int[] to, int flags) {
 		super(context, layout, c, from, to, flags);
 		this.mContext = context;
@@ -80,6 +80,16 @@ public class AlphabetizedAdapter extends PhoneAdapter implements SectionIndexer{
 		}
 
 		return null;
+	}
+
+	@Override
+	public long getItemId(int position) {
+		if (mDataValid && mCursor != null) {
+			if(getItemViewType(position)==TYPE_NORMAL) {
+				return super.getItemId(position - sectionToOffset.get(getSectionForPosition(position)) - 1);
+			}
+		}
+		return 0;
 	}
 
 	@Override
@@ -161,7 +171,7 @@ public class AlphabetizedAdapter extends PhoneAdapter implements SectionIndexer{
 			indexer.setCursor(c);
 		return oldCursor;
 	}
-	
+
 	//these two methods just disable the headers
 	@Override
 	public boolean areAllItemsEnabled() {

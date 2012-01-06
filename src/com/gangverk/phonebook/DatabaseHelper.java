@@ -15,7 +15,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
 	//The Android's default system path of your application database.
 	private static String DB_PATH = "/data/data/com.gangverk.phonebook/databases/";
-	private static String DB_NAME = "phonebook.db";
+	private static String DB_NAME = "phonebook.sqlite";
 	private SQLiteDatabase myDataBase; 
 	private final Context myContext;
 

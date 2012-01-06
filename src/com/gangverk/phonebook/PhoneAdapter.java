@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 //import android.widget.SimpleCursorAdapter;
 
 public class PhoneAdapter extends SimpleCursorAdapter {
@@ -19,7 +18,7 @@ public class PhoneAdapter extends SimpleCursorAdapter {
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
 		View view = super.newView(context, cursor, parent);
-		ImageButton btnCall = (ImageButton)view.findViewById(R.id.btnCall);
+		DontPressWithParentImgButton btnCall = (DontPressWithParentImgButton)view.findViewById(R.id.btnCall);
 		btnCall.setOnClickListener(callButtonListener);
 		return view;
 	}

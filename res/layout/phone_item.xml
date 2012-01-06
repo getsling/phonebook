@@ -5,7 +5,7 @@
         android:id="@+id/relativeLayoutLeft"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="5dip" >
+        android:padding="0dip" >
         <TextView
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_height="wrap_content"
