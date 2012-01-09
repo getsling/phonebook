@@ -1,32 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <RelativeLayout
+    <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:descendantFocusability="blocksDescendants"
         android:id="@+id/relativeLayoutLeft"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+
         android:padding="0dip" >
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" 
+                    android:layout_weight="1">
         <TextView
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:id="@+id/textLarge" 
+            android:text="Name"
             android:layout_marginLeft="2dip">
         </TextView> 
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:id="@+id/textSmall1" 
-            android:layout_below="@+id/textLarge"
+            android:text="Number"
             android:layout_marginLeft="2dip">
         </TextView>
+        </LinearLayout>
         <com.gangverk.phonebook.DontPressWithParentImgButton
-            android:layout_width="50dip"
             android:layout_height="50dip"
-            android:src="@drawable/call_contact"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:scaleType="center" 
+            android:layout_weight="0"
+            android:layout_width="50dip"
             android:id="@+id/btnCall" 
-            android:contentDescription="@string/txtCallContact"/> 
-    </RelativeLayout>
+            android:src="@drawable/call_contact"
+            android:background="@drawable/img_button"
+            android:contentDescription="@string/txtCallContact"/>
+ 
+    </LinearLayout>

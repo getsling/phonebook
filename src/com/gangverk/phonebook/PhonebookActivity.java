@@ -13,19 +13,20 @@ import android.widget.ListView;
 
 public class PhonebookActivity extends ListActivity {
 
-	private DatabaseHelper myDB = new DatabaseHelper(this);
-	private Cursor c;
+	private static final String LOG_TAG = "PhonebookActivity";
 	ListView lv;
 	AlphabetizedAdapter aAdapter;
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		new DownloadPhonebookAsyncTask(getApplicationContext()).execute();
 		lv = getListView();
-		//lv.setTextFilterEnabled(true);
+		lv.setTextFilterEnabled(true);
 		lv.setFastScrollEnabled(true);
 		fillPhoneBook();
 	}
+
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
@@ -40,36 +41,33 @@ public class PhonebookActivity extends ListActivity {
 	private void fillPhoneBook() 
 	{
 		Uri allContacts = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts");
-		c = managedQuery(allContacts, null, null, null, null);
+		Cursor c = managedQuery(allContacts, null, null, null, null);
 		String[] from = new String[] { ContactsProvider.NAME, ContactsProvider.MOBILE};
 		int[] to = new int[] { R.id.textLarge, R.id.textSmall1 };
-		aAdapter = new AlphabetizedAdapter(this, R.layout.phone_item, c, from, to,0);
+		aAdapter = new AlphabetizedAdapter(getApplicationContext(), R.layout.phone_item, c, from, to,0);
 		aAdapter.setCallButtonListener(callButtonListener);
 		lv.setAdapter(aAdapter);
 	}
 
 	@Override
-	protected void onStop() {
-		try {
-			super.onStop();
-
-			if (this.aAdapter !=null){
-				this.aAdapter.getCursor().close();
-				this.aAdapter= null;
-			}
-
-			if (this.c != null) {
-				this.c.close();
-			}
-
-			if (this.myDB != null) {
-				this.myDB .close();
-			}
-		} catch (Exception error) {
-			Log.e("OnStop error", error.getMessage());
-		}
+	protected void onStart() {
+		super.onStart();
+		Log.d(LOG_TAG,"onStart");
 	}
 
+	@Override
+	protected void onStop() {
+		super.onStop();
+		Log.d(LOG_TAG,"onStop");
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		//fillPhoneBook();
+		Log.d(LOG_TAG,"onResume");
+	}
+	
 	private OnClickListener callButtonListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -78,7 +76,7 @@ public class PhonebookActivity extends ListActivity {
 			if (position != ListView.INVALID_POSITION) {
 				try {
 					Uri singleContact = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts/"+id);
-					c = managedQuery(singleContact, null, null, null, null);
+					Cursor c = managedQuery(singleContact, null, null, null, null);
 					c.moveToFirst();
 					String strNumber = c.getString(c.getColumnIndexOrThrow(ContactsProvider.MOBILE));
 					strNumber = strNumber.replace("+", "00").replaceAll("[^0-9]","");
@@ -93,11 +91,7 @@ public class PhonebookActivity extends ListActivity {
 		}
 	};
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		fillPhoneBook();
-	}
+
 }
 
 

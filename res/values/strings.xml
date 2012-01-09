@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Símaskrá Mannvits</string>
+    <string name="app_name">Mannvit Símaskrá</string>
     <string name="expandable_list_sample_action">Test</string>
     <string name="txtName">Nafn</string>
     <string name="txtTitle">Starfsheiti</string>
@@ -8,4 +8,5 @@
     <string name="txtDivisionWorkplace">Deild / Vinnustaður</string>
     <string name="txtCallContact">Hringja</string>
     <string name="profilePicture">Prófílmynd</string>
+    <string name="email">Netfang</string>
 </resources>

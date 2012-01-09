@@ -1,7 +1,5 @@
 package com.gangverk.phonebook;
 
-import java.io.IOException;
-
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
@@ -47,12 +45,6 @@ public class ContactsProvider extends ContentProvider {
 	public boolean onCreate() {
 		Context context = getContext();
 		DatabaseHelper myDB = new DatabaseHelper(context);
-		try {
-			myDB.createDataBase();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		contactsDB = myDB.getReadableDatabase();
 		return (contactsDB == null)? false:true;
 	}

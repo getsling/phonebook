@@ -1,23 +1,29 @@
 package com.gangverk.phonebook;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import android.content.Context;
-import android.database.SQLException;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper{
 
+	private static final String LOG_TAG = "DatabaseHelper";
 	//The Android's default system path of your application database.
-	private static String DB_PATH = "/data/data/com.gangverk.phonebook/databases/";
-	private static String DB_NAME = "phonebook.sqlite";
-	private SQLiteDatabase myDataBase; 
-	private final Context myContext;
+	private static String DB_NAME = "mannvit_staff.sqlite";
+	private static final int DB_VERSION = 1;
+	private static final boolean FORCE_RECOPY = false;
 
 	/**
 	 * Constructor
@@ -25,89 +31,55 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	 * @param context
 	 */
 	public DatabaseHelper(Context context) {
-		super(context, DB_NAME, null, 1);
-		this.myContext = context;
-	}	
-
-	/**
-	 * Creates a empty database on the system and rewrites it with your own database.
-	 * */
-	public void createDataBase() throws IOException{
-		boolean dbExist = checkDataBase();
-		if(dbExist){
-			//do nothing - database already exist
-		}else{
-
-			//By calling this method and empty database will be created into the default system path
-			//of your application so we are gonna be able to overwrite that database with our database.
-			this.getReadableDatabase();
-			try {
-				copyDataBase();
-			} catch (IOException e) {
-				throw new Error("Error copying database");
+		super(context, DB_NAME, null, DB_VERSION);
+		Log.d(LOG_TAG,"DatabaseHelper started constructor");
+		File dbFile = context.getDatabasePath(DB_NAME);
+		String[] tables = new String[]{"employee","division","workplace"};
+		String[] views = new String[]{"employeeInfo"};
+		String[] indexes = new String[]{};
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+		boolean hasDownloadedDb = settings.getBoolean(DownloadPhonebookAsyncTask.SETTINGS_KEY_HAS_NEW_DB, false);
+        if(hasDownloadedDb) {
+        	Log.d(LOG_TAG,"Starting processing downloaded db file");
+    		File srcFile = new File(String.format("%s/%s", context.getFilesDir(),DownloadPhonebookAsyncTask.DOWNLOADED_DB_FILENAME));
+    		if(checkDBFileValidity(srcFile, tables, views, indexes))
+    		{
+    			try {
+    				SystemUtils.copy(srcFile, dbFile);
+    				Log.i(LOG_TAG, "Copied new station guide db");
+    			} catch (IOException e) {
+    				e.printStackTrace();
+    			}
+    		}
+        	
+        	SharedPreferences.Editor settingsEditor = settings.edit();
+        	settingsEditor.putBoolean(DownloadPhonebookAsyncTask.SETTINGS_KEY_HAS_NEW_DB, false);
+        	settingsEditor.commit();
+			if(srcFile.isFile()) {
+				context.deleteFile(DownloadPhonebookAsyncTask.DOWNLOADED_DB_FILENAME);
 			}
+        	Log.d(LOG_TAG,"Ended processing downloaded db file");
+        } else if(FORCE_RECOPY || !dbFile.exists() || !checkDBFileValidity(dbFile,tables,views,indexes)) {
+			dbFile.getParentFile().mkdirs();
+			InputStream inputRaw = null;
+			OutputStream outputDbFile = null;
+					
+	        try {
+	        	// copy file from raw resource to a file in app root
+	        	inputRaw = context.getResources().openRawResource(R.raw.mannvit_staff);
+	        	outputDbFile = new FileOutputStream(dbFile);
+	        	SystemUtils.copyInputStreamToOutputStream(inputRaw, outputDbFile);
+	        } catch (IOException ioe) {
+	        	Log.e(LOG_TAG,"Could not find or read sqlite db");
+	        	ioe.printStackTrace();
+	        } finally {
+	        	if(inputRaw != null) {try{inputRaw.close();}catch(IOException ioe){}}
+	        	if(outputDbFile != null) {try{outputDbFile.close();}catch(IOException ioe){}}
+	        }
+	        
 		}
-	}
-
-	/**
-	 * Check if the database already exist to avoid re-copying the file each time you open the application.
-	 * @return true if it exists, false if it doesn't
-	 */
-	private boolean checkDataBase(){
-		SQLiteDatabase checkDB = null;
-		try{
-			String myPath = DB_PATH + DB_NAME;
-			checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-		}catch(SQLiteException e){
-			//database does't exist yet.
-		}
-		if(checkDB != null){
-			checkDB.close();
-		}
-		return checkDB != null ? true : false;
-	}
-
-	/**
-	 * Copies your database from your local assets-folder to the just created empty database in the
-	 * system folder, from where it can be accessed and handled.
-	 * This is done by transfering bytestream.
-	 * */
-	private void copyDataBase() throws IOException{
-
-		//Open your local db as the input stream
-		InputStream myInput = myContext.getAssets().open(DB_NAME);
-
-		// Path to the just created empty db
-		String outFileName = DB_PATH + DB_NAME;
-
-		//Open the empty db as the output stream
-		OutputStream myOutput = new FileOutputStream(outFileName);
-
-		//transfer bytes from the inputfile to the outputfile
-		byte[] buffer = new byte[1024];
-		int length;
-		while ((length = myInput.read(buffer))>0){
-			myOutput.write(buffer, 0, length);
-		}
-
-		//Close the streams
-		myOutput.flush();
-		myOutput.close();
-		myInput.close();
-	}
-
-	public void openDataBase() throws SQLException{
-		//Open the database
-		String myPath = DB_PATH + DB_NAME;
-		myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-	}
-
-	@Override
-	public synchronized void close() {
-		if(myDataBase != null)
-			myDataBase.close();
-		super.close();
-	}
+		Log.d(LOG_TAG,"StationGuideDatabaseHelper ended constructor");
+	}	
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
@@ -115,5 +87,66 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		throw new RuntimeException("Database is not upgrade-able");
+	}
+	
+	public static boolean checkDBFileValidity(File dbFile, String[] tables, String[] views, String[] indexes) {
+		if(!dbFile.isFile()) {
+			return false;
+		}
+		
+		SQLiteDatabase newDatabase = null;
+		Cursor tableCursor = null;
+		
+		try {
+			newDatabase = SQLiteDatabase.openDatabase(dbFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READONLY);
+			// Check if we have all tables and indexes in incoming db
+			tableCursor = newDatabase.query("sqlite_master", new String[]{"type","name","tbl_name",}, null, null, null, null, null);
+			int columnType = tableCursor.getColumnIndex("type");
+			int columnName = tableCursor.getColumnIndex("name");
+			int columnTblName = tableCursor.getColumnIndex("tbl_name");
+			Set<String> tableSet = new HashSet<String>();
+			Set<String> viewSet = new HashSet<String>();
+			Set<String> indexSet = new HashSet<String>();
+			
+			// collect all table/index name
+			while(tableCursor.moveToNext()) {
+				String type = tableCursor.getString(columnType);
+				if(type.equals("table")) {
+					tableSet.add(tableCursor.getString(columnName));
+				} else if(type.equals("index")) {
+					indexSet.add(String.format("%s.%s", tableCursor.getString(columnTblName), tableCursor.getString(columnName)));
+				} else if(type.equals("view")) {
+					viewSet.add(tableCursor.getString(columnName));
+				}
+			}
+	
+			for(String tblName : tables) {
+				if(!tableSet.contains(tblName)) {
+					Log.e(LOG_TAG,String.format("Invalid database, missing table %s",tblName));
+					return false;
+				}
+			}
+			for(String viewName : views) {
+				if(!viewSet.contains(viewName)) {
+					Log.e(LOG_TAG,String.format("Invalid database, missing view %s",viewName));
+					return false;
+				}
+			}
+			for(String indexName : indexes) {
+				if(!indexSet.contains(indexName)) {
+					Log.e(LOG_TAG,String.format("Invalid database, missing table %s",indexName));
+					return false;
+				}
+			}
+		} catch (SQLiteException e) {
+			Log.e(LOG_TAG,String.format("Could not read new database, error: %s",e.toString()));
+			return false;
+		} finally {
+			if(tableCursor != null) { tableCursor.close(); }
+			if(newDatabase != null) { newDatabase.close(); }
+			
+		}
+		return true;
 	}
 }

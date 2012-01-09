@@ -3,7 +3,7 @@ package com.gangverk.phonebook;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import android.app.Activity;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.view.LayoutInflater;
@@ -23,11 +23,10 @@ public class AlphabetizedAdapter extends PhoneAdapter implements SectionIndexer{
 	private int[] usedSectionNumbers;
 	private Map<Integer, Integer> sectionToOffset;
 	private Map<Integer, Integer> sectionToPosition;
-	Context mContext;
-
+	private final LayoutInflater mLayoutInflater;
 	public AlphabetizedAdapter(Context context, int layout, Cursor c,String[] from, int[] to, int flags) {
 		super(context, layout, c, from, to, flags);
-		this.mContext = context;
+		mLayoutInflater = LayoutInflater.from(context);
 		indexer = new AlphabetIndexer(c, c.getColumnIndexOrThrow(ContactsProvider.NAME), " ABCDEFGHIJKLMNOPQRSTUVWXYZÞÆÖ");
 		sectionToPosition = new TreeMap<Integer, Integer>(); //use a TreeMap because we are going to iterate over its keys in sorted order
 		sectionToOffset = new HashMap<Integer, Integer>();
@@ -155,8 +154,7 @@ public class AlphabetizedAdapter extends PhoneAdapter implements SectionIndexer{
 		final int type = getItemViewType(position);
 		if (type == TYPE_HEADER){
 			if (convertView == null){
-				LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
-				convertView = inflater.inflate (R.layout.alphabet_header, parent, false);
+				convertView = mLayoutInflater.inflate (R.layout.alphabet_header, parent, false);
 			}
 			((TextView)convertView.findViewById(R.id.header)).setText((String)getSections()[getSectionForPosition(position)]);
 			return convertView;
