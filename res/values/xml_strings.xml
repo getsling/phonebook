@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="xmlName">Name</string>
+    <string name="xmlNumber">Number</string>
+    <string name="xmlNoOfResults">Number of results</string>
+    <string name="xmlLetter">L (Letter)</string>
+    <string name="xmlProfilePic">Small profile picture</string>
+
+</resources>

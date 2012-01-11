@@ -27,7 +27,7 @@ public class AlphabetizedAdapter extends PhoneAdapter implements SectionIndexer{
 	public AlphabetizedAdapter(Context context, int layout, Cursor c,String[] from, int[] to, int flags) {
 		super(context, layout, c, from, to, flags);
 		mLayoutInflater = LayoutInflater.from(context);
-		indexer = new AlphabetIndexer(c, c.getColumnIndexOrThrow(ContactsProvider.NAME), " ABCDEFGHIJKLMNOPQRSTUVWXYZﬁ∆÷");
+		indexer = new AlphabetIndexer(c, c.getColumnIndexOrThrow(ContactsProvider.NAME), "ABCDEFGHIJKLMNOPQRSTUVWXYZ√û√Ü√ñ ");
 		sectionToPosition = new TreeMap<Integer, Integer>(); //use a TreeMap because we are going to iterate over its keys in sorted order
 		sectionToOffset = new HashMap<Integer, Integer>();
 
@@ -130,7 +130,7 @@ public class AlphabetizedAdapter extends PhoneAdapter implements SectionIndexer{
 		}
 		return usedSectionNumbers[i-1];
 	}
-
+	
 	@Override
 	public Object[] getSections() {
 		return indexer.getSections();

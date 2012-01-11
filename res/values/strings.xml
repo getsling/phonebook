@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Mannvit Símaskrá</string>
+    <string name="search_hint">Leita í símaskrá</string>
     <string name="expandable_list_sample_action">Test</string>
     <string name="txtName">Nafn</string>
     <string name="txtTitle">Starfsheiti</string>
@@ -9,4 +11,17 @@
     <string name="txtCallContact">Hringja</string>
     <string name="profilePicture">Prófílmynd</string>
     <string name="email">Netfang</string>
+    <string name="division">Deild</string>
+    <string name="workplace">Vinnustaður</string>
+    <string name="phone">Símanúmer</string>
+    <string name="mobile">Farsími</string>
+    <string name="menu_search">Leita</string>
+    <string name="add_success">Tengilið bætt í símaskrá!</string>
+    <string name="no_results">Engar niðurstöður fyrir \"%s\"</string>
+    <!-- Shown above search results when we receive a search request. -->
+    <plurals name="search_results">
+        <item quantity="one">%1$d niðurstaða fyrir \"%2$s\": </item>
+        <item quantity="other">%1$d niðurstöður fyrir \"%2$s\": </item>
+    </plurals>
+
 </resources>

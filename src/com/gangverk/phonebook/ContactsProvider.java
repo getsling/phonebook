@@ -1,5 +1,6 @@
 package com.gangverk.phonebook;
 
+import android.app.SearchManager;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,9 +12,9 @@ import android.net.Uri;
 
 public class ContactsProvider extends ContentProvider {
 
-	 //public static final String TABLE = "employee AS e "
-     //        + "JOIN workplace ON (employee.workplace_id = workplace._id) "
-     //        + "JOIN division ON (employee.division_id = division._id)";
+	//public static final String TABLE = "employee AS e "
+	//        + "JOIN workplace ON (employee.workplace_id = workplace._id) "
+	//        + "JOIN division ON (employee.division_id = division._id)";
 	public static final String TABLE = "employeeInfo";
 	public static SQLiteDatabase contactsDB;
 	public static final String PROVIDER_NAME = 
@@ -22,6 +23,9 @@ public class ContactsProvider extends ContentProvider {
 	public static final Uri CONTENT_URI = 
 			Uri.parse("content://"+ PROVIDER_NAME + "/contacts");
 
+
+	public static final String KEY_WORD = SearchManager.SUGGEST_COLUMN_TEXT_1;
+	public static final String KEY_DEFINITION = SearchManager.SUGGEST_COLUMN_TEXT_2;
 	public static final String _ID = "_id";
 	public static final String NAME = "employee";
 	public static final String TITLE = "title";
@@ -33,12 +37,11 @@ public class ContactsProvider extends ContentProvider {
 
 	private static final int CONTACTS = 1;
 	private static final int CONTACT_ID = 2;   
-
 	private static final UriMatcher uriMatcher;
 	static{
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 		uriMatcher.addURI(PROVIDER_NAME, "contacts", CONTACTS);
-		uriMatcher.addURI(PROVIDER_NAME, "contacts/#", CONTACT_ID);      
+		uriMatcher.addURI(PROVIDER_NAME, "contacts/#", CONTACT_ID);
 	}
 
 	@Override
@@ -78,14 +81,15 @@ public class ContactsProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder sqlBuilder = new SQLiteQueryBuilder();
-		//sqlBuilder.setTables(DatabaseHelper.DATABASE_TABLE_EMPLOYEE + "," + DatabaseHelper. DATABASE_TABLE_DIVISION + "," + DatabaseHelper.DATABASE_TABLE_WORKPLACE);
 		sqlBuilder.setTables(TABLE);
-		if (uriMatcher.match(uri) == CONTACT_ID)
+		int uriMatch = uriMatcher.match(uri);
+		if (uriMatch == CONTACT_ID)
 			// If getting a particular contact
 			sqlBuilder.appendWhere(
 					_ID + " = " + uri.getPathSegments().get(1));  
 		if (sortOrder==null || sortOrder=="")
 			sortOrder = NAME;
+
 		Cursor c = sqlBuilder.query(
 				contactsDB, 
 				projection, 

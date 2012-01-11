@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="default_workphone">Sjálfgefinn vinnusími</string>
+    <string name="default_mobile">Sjálfgefinn farsími</string>
+    <string name="add_to_contacts">Bæta við í tengiliðum</string>
+
+    <string-array name="phonebook_context_menu">
+        <item>@string/default_workphone</item>
+        <item>@string/default_mobile</item>
+        <item>@string/add_to_contacts</item>
+    </string-array>
+
+</resources>

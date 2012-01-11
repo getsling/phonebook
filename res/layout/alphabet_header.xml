@@ -6,7 +6,8 @@
     android:padding="6dp"
     android:textSize="18sp" 
     android:textStyle="bold"
-    android:gravity="center"
-    android:background="@android:color/white"
-    android:textColor="@android:color/black"
+    android:gravity="left"
+    android:background="@color/mannvit_yellow"
+    android:textColor="@color/mannvit_gray"
+    android:text="@string/xmlLetter"
     />

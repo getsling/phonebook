@@ -5,35 +5,44 @@
         android:id="@+id/relativeLayoutLeft"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:padding="5dip" >
 
-        android:padding="0dip" >
+        <ImageView
+            android:id="@+id/smallProfilePic"
+            android:layout_weight="0"
+            android:layout_height="50dip"
+            android:layout_width="50dip"
+            android:src="@drawable/icon" 
+            android:contentDescription="@string/xmlProfilePic"/>
+
         <LinearLayout
             android:id="@+id/linearLayout1"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical" 
-                    android:layout_weight="1">
+            android:layout_weight="1">
         <TextView
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
+            android:singleLine="true"
             android:id="@+id/textLarge" 
-            android:text="Name"
+            android:text="@string/xmlName"
             android:layout_marginLeft="2dip">
         </TextView> 
         <TextView
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:id="@+id/textSmall1" 
-            android:text="Number"
+            android:text="@string/xmlNumber"
             android:layout_marginLeft="2dip">
         </TextView>
         </LinearLayout>
         <com.gangverk.phonebook.DontPressWithParentImgButton
             android:layout_height="50dip"
+            android:layout_width="50dip"
             android:scaleType="center" 
             android:layout_weight="0"
-            android:layout_width="50dip"
             android:id="@+id/btnCall" 
             android:src="@drawable/call_contact"
             android:background="@drawable/img_button"

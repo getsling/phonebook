@@ -17,6 +17,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -25,10 +26,10 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 public class SingleEmployee extends Activity {
-	private Cursor c;
 	ListView lv;
 	SimpleAdapter dAdapter;
 	long userID;
+	int positionInList;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -36,23 +37,21 @@ public class SingleEmployee extends Activity {
 		setContentView(R.layout.single_employee);
 		Bundle extras = getIntent().getExtras();
 		userID = extras.getLong(ContactsProvider._ID); 
-
+		positionInList = extras.getInt("positionInList");
 		AssetManager assetManager = getAssets();
-
+		ImageView IV_profilePic = (ImageView)findViewById(R.id.profilePic);
 		InputStream istr = null;
 		try {
 			istr = assetManager.open("profile/img_"+userID+".jpg");
+			Bitmap bitmap = BitmapFactory.decodeStream(istr);
+			IV_profilePic.setImageBitmap(bitmap);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			IV_profilePic.setImageResource(R.drawable.icon);
 			e.printStackTrace();
 		}
-		Bitmap bitmap = BitmapFactory.decodeStream(istr);
-
-		ImageView IV_profilePic = (ImageView)findViewById(R.id.profilePic);
-		IV_profilePic.setImageBitmap(bitmap);
-
-		Uri allContacts = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts/" + userID);
-		c = managedQuery(allContacts, null, null, null, null);
+		
+		Uri singleContact = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts/" + userID);
+		Cursor c = managedQuery(singleContact, null, null, null, null);
 		c.moveToFirst();
 		TextView tv_name = (TextView)findViewById(R.id.singleName);
 		TextView tv_title = (TextView)findViewById(R.id.singleTitle);
@@ -68,11 +67,15 @@ public class SingleEmployee extends Activity {
 		String dbGsm = c.getString(c.getColumnIndexOrThrow(ContactsProvider.MOBILE));
 
 		List<HashMap<String, String>> valueList = new ArrayList<HashMap<String, String>>();
-		String descriptiveDescription[] = {getString(R.string.email),"Deild","Vinnustaður","Símanúmer","Gsm"};
+		String descriptiveDescription[] = {getString(R.string.email),getString(R.string.division),getString(R.string.workplace),getString(R.string.phone),getString(R.string.mobile)};
 		String descriptiveData[] = {dbEmail,dbDivision,dbWorkplace,dbPhone,dbGsm};
 		int i=0;
 		for(String data : descriptiveData)
 		{
+			if(TextUtils.isEmpty(data)) {
+				i++;
+				continue;
+			}
 			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("description",descriptiveDescription[i]);
 			if(descriptiveDescription[i] == getString(R.string.email))
@@ -103,13 +106,14 @@ public class SingleEmployee extends Activity {
 					i.setData(mailData);
 					startActivity(Intent.createChooser(i, "Send email"));
 				}
-				if((String)map.get("description") == "Símanúmer")
+				if((String)map.get("description") == getString(R.string.phone))
 				{
 					SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 					Editor editor = settings.edit();
 					editor.putBoolean(String.format("phone_%d",userID), true);
-					boolean a = settings.getBoolean(String.format("phone_%d",userID), false);
 					editor.commit();
+					
+					setResult(positionInList);
 				}
 			}
 		});
