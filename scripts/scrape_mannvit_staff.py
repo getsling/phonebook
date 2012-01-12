@@ -4,7 +4,10 @@ STAFF_URL = "%sMannvit/Starfsmenn/" % (BASE_URL,)
 DBFILE = "mannvit_staff.sqlite"
 
 from lxml import etree
-import urllib2, codecs, os.path, sqlite3
+import urllib2, codecs, os.path, sqlite3, re
+
+REX_FOREIGN = re.compile("(\(?\+\d+\)?)")
+REX_NON_NUMERIC= re.compile("([^\d]+)")
 
 def page_to_tree(url,filename):
 	parser = etree.HTMLParser(recover=True)
@@ -23,6 +26,23 @@ def page_to_tree(url,filename):
 	f.close()
 
 	return etree.fromstring(raw_html, parser)
+
+def parse_phone(number):
+	countrypart = ''
+	match = REX_FOREIGN.match(number)
+	# throw away multiple numbers
+	number = number.split('/')[0]
+	number = number.split(',')[0]
+	localnum = number
+	countrypart = "354"
+	if match:
+		countrypart = match.groups()[0]
+		countrypart = REX_NON_NUMERIC.sub('',countrypart)
+		localnum = number.replace(match.groups()[0],'')
+		# assume space after country code in phone number
+		#TODO: hack, this is pretty hardcoded
+	localnum = REX_NON_NUMERIC.sub('',localnum)
+	return '+%s %s' % (countrypart,localnum) if len(localnum) > 0 else ''
 
 def main():
 	main_filename = 'mannvit_staff.html'
@@ -83,9 +103,9 @@ def main():
 				elif itemtype.startswith('name'):
 					employee['name'] = itemvalue
 				elif itemtype.startswith('Beinn'):
-					employee['phone'] = itemvalue
+					employee['phone'] = parse_phone(itemvalue)
 				elif itemtype.startswith('GSM'):
-					employee['mobile'] = itemvalue
+					employee['mobile'] = parse_phone(itemvalue)
 				elif itemtype.startswith('Netfa'):
 					employee['email'] = itemvalue
 				else:
