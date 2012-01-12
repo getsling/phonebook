@@ -1,3 +1,6 @@
 bin/*
 gen/*
 libs/*
+scripts/htmlfiles
+scripts/*.sqlite
+.DS_Store
