@@ -88,7 +88,7 @@ public class ContactsProvider extends ContentProvider {
 			sqlBuilder.appendWhere(
 					_ID + " = " + uri.getPathSegments().get(1));  
 		if (sortOrder==null || sortOrder=="")
-			sortOrder = NAME;
+			sortOrder = NAME + " COLLATE LOCALIZED ASC";
 
 		Cursor c = sqlBuilder.query(
 				contactsDB, 

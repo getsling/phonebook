@@ -128,13 +128,13 @@ def main():
 	c.execute("""CREATE TABLE employee(_id INTEGER PRIMARY KEY, name VARCHAR(256), title VARCHAR(256), phone VARCHAR(64), mobile VARCHAR(64), email VARCHAR(256), workplace_id INTEGER, division_id INTEGER,FOREIGN KEY (workplace_id) REFERENCES workplace(_id), FOREIGN KEY (division_id) REFERENCES division(_id))""")
 	c.execute("""CREATE INDEX nIndex ON employee(name)""")
 	c.execute("""CREATE TABLE workplace(_id INTEGER PRIMARY KEY, address VARCHAR(256))""")
-	c.execute("""CREATE VIEW employeeInfo AS SELECT e._id AS _id, e.name AS employee, e.title AS title, e.phone AS phone, e.mobile AS mobile, e.email AS email, w.address AS workplace, d.name AS division FROM employee e, workplace w, division d WHERE w._id = e.workplace_id AND d._id = e.division_id""")
+	c.execute("""CREATE VIEW employeeInfo AS SELECT e._id AS _id, e.name AS employee, e.title AS title, e.phone AS phone, e.mobile AS mobile, e.email AS email, w.address AS workplace, d.name AS division FROM employee e LEFT OUTER JOIN workplace w ON w._id = e.workplace_id LEFT OUTER JOIN division d ON d._id = e.division_id""")
 	for workplace_name, workplace_id in workplaces.iteritems():
 		c.execute("""INSERT INTO workplace (_id,address) VALUES (?,?)""", (workplace_id, workplace_name))
 
 	for employee in employees:
 		c.execute("""INSERT INTO employee(_id,name,title,phone,mobile,email,workplace_id,division_id) VALUES (?,?,?,?,?,?,?,?)""", (employee['id'],employee['name'],employee.get('title',''),employee.get('phone',''),employee.get('mobile',''),employee.get('email',''),employee.get('workplace',0),0))
-
+	c.execute('''INSERT INTO "android_metadata" VALUES('is_IS')''')
 	conn.commit()
 	c.execute('VACUUM')
 	c.close()

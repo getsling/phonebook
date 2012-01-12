@@ -8,10 +8,24 @@
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
 
     <application
+        android:debuggable="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name" >
+        <receiver android:name="PhoneCallReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.HOME" />
+
+                <action android:name="android.intent.action.PHONE_STATE" >
+                </action>
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".PhonebookActivity"
             android:label="@string/app_name" >
@@ -25,8 +39,7 @@
                 android:name="android.app.default_searchable"
                 android:value=".SearchActivity" />
         </activity>
-        <activity android:name=".SingleEmployee" >
-        </activity>
+        <activity android:name=".SingleEmployee" />
         <activity android:name=".SearchActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -36,6 +49,11 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
+
+        <service
+            android:name=".MannvitService"
+            android:process=":mannvit_process" >
+        </service>
 
         <provider
             android:name="ContactsProvider"

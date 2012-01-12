@@ -1,8 +1,5 @@
 package com.gangverk.phonebook;
 
-import java.util.regex.Pattern;
-import java.util.Locale;
-
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
@@ -38,8 +35,9 @@ public class SearchActivity extends Activity {
 	}
 	
 	private void showResults(String query) {
-		Uri singleContact = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts");
-		Cursor cursor = managedQuery(singleContact, null, ContactsProvider.NAME + " LIKE ?", new String[]{"%"+query+"%"}, null);
+		Uri searchContact = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts");
+		String querySearch = query + "%";
+		Cursor cursor = managedQuery(searchContact, null, ContactsProvider.NAME + " LIKE ?", new String[]{querySearch}, null);
 		if(!cursor.moveToFirst()) {
 			// There are no results
 			mTextView.setText(getString(R.string.no_results, new Object[] {query}));

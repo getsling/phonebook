@@ -32,7 +32,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	 */
 	public DatabaseHelper(Context context) {
 		super(context, DB_NAME, null, DB_VERSION);
-		Log.d(LOG_TAG,"DatabaseHelper started constructor");
 		File dbFile = context.getDatabasePath(DB_NAME);
 		String[] tables = new String[]{"employee","division","workplace"};
 		String[] views = new String[]{"employeeInfo"};
@@ -46,7 +45,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     		{
     			try {
     				SystemUtils.copy(srcFile, dbFile);
-    				Log.i(LOG_TAG, "Copied new station guide db");
     			} catch (IOException e) {
     				e.printStackTrace();
     			}
@@ -78,7 +76,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	        }
 	        
 		}
-		Log.d(LOG_TAG,"StationGuideDatabaseHelper ended constructor");
 	}	
 
 	@Override

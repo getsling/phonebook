@@ -33,15 +33,15 @@ import android.widget.Toast;
 
 public class PhonebookActivity extends ListActivity {
 
-	private static final String LOG_TAG = "PhonebookActivity";
-	private static final int PICK_CONTACT = 0;
 	private ListView lv;
 	private AlphabetizedAdapter aAdapter;
+	private SharedPreferences settings; 
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		startService(new Intent(getApplicationContext(),MannvitService.class));
 		new DownloadPhonebookAsyncTask(getApplicationContext()).execute();
 		lv = getListView();
 		lv.setFastScrollEnabled(true);
@@ -153,19 +153,9 @@ public class PhonebookActivity extends ListActivity {
 		Cursor cursor = (Cursor)l.getItemAtPosition(position);
 		int intID = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsProvider._ID));
 		long trueID = Long.valueOf(intID);
-		int truePosition = l.getFirstVisiblePosition();
 		Intent i = new Intent(this, SingleEmployee.class);   
 		i.putExtra(ContactsProvider._ID, trueID);
-		i.putExtra("positionInList", truePosition);
-		startActivityForResult(i, PICK_CONTACT); 
-	}
-
-	protected void onActivityResult(int requestCode, int resultCode,Intent data) {
-		if (requestCode == PICK_CONTACT) {
-			if (resultCode != RESULT_CANCELED) {
-				fillPhoneBook(resultCode);
-			}
-		}
+		startActivity(i); 
 	}
 
 	private void fillPhoneBook(int position) 
@@ -184,19 +174,16 @@ public class PhonebookActivity extends ListActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Log.d(LOG_TAG,"onStart");
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		Log.d(LOG_TAG,"onStop");
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.d(LOG_TAG,"onResume");
 	}
 
 	private OnClickListener callButtonListener = new OnClickListener() {
@@ -209,10 +196,12 @@ public class PhonebookActivity extends ListActivity {
 					Uri singleContact = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts/"+id);
 					Cursor c = managedQuery(singleContact, null, null, null, null);
 					c.moveToFirst();
-					String strNumber = c.getString(c.getColumnIndexOrThrow(ContactsProvider.MOBILE));
-					if(strNumber == "")
-					{
-						strNumber = c.getString(c.getColumnIndexOrThrow(ContactsProvider.PHONE));
+					String strNumber = null;
+					boolean usesPhoneNumber = settings.getBoolean(String.format("phone_%d",id),false);
+					if(usesPhoneNumber)	{
+						strNumber = c.getString(c.getColumnIndex(ContactsProvider.PHONE));
+					} else {
+						strNumber = c.getString(c.getColumnIndexOrThrow(ContactsProvider.MOBILE));
 					}
 					strNumber = strNumber.replace("+", "00").replaceAll("[^0-9]","");
 					long longNum = Long.parseLong(strNumber);
@@ -221,11 +210,12 @@ public class PhonebookActivity extends ListActivity {
 					startActivity(callIntent);
 				} catch (ActivityNotFoundException e) {
 					Log.e("Call function, onClickListener", "Call failed", e);
+				} catch (NullPointerException e) {
+					Toast.makeText(getApplicationContext(), getString(R.string.invalid_number), Toast.LENGTH_LONG).show();
 				}
 			}
 		}
 	};
-
 
 }
 

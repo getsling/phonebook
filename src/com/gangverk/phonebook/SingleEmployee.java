@@ -7,17 +7,16 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -29,15 +28,13 @@ public class SingleEmployee extends Activity {
 	ListView lv;
 	SimpleAdapter dAdapter;
 	long userID;
-	int positionInList;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.single_employee);
 		Bundle extras = getIntent().getExtras();
 		userID = extras.getLong(ContactsProvider._ID); 
-		positionInList = extras.getInt("positionInList");
 		AssetManager assetManager = getAssets();
 		ImageView IV_profilePic = (ImageView)findViewById(R.id.profilePic);
 		InputStream istr = null;
@@ -49,14 +46,12 @@ public class SingleEmployee extends Activity {
 			IV_profilePic.setImageResource(R.drawable.icon);
 			e.printStackTrace();
 		}
-		
+
 		Uri singleContact = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts/" + userID);
 		Cursor c = managedQuery(singleContact, null, null, null, null);
 		c.moveToFirst();
 		TextView tv_name = (TextView)findViewById(R.id.singleName);
 		TextView tv_title = (TextView)findViewById(R.id.singleTitle);
-		//TextView tv_email = (TextView)findViewById(R.id.singleEmail);
-		//TextView tv_divisionWorkplace = (TextView)findViewById(R.id.singleDivisionWorkplace);
 
 		String dbName = c.getString(c.getColumnIndexOrThrow(ContactsProvider.NAME));
 		String dbTitle = c.getString(c.getColumnIndexOrThrow(ContactsProvider.TITLE));
@@ -95,25 +90,38 @@ public class SingleEmployee extends Activity {
 		lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-				
+
 				Object o = lv.getItemAtPosition(position);
 				@SuppressWarnings("unchecked")
 				HashMap<String,String> map = (HashMap<String,String>) o;
-				if((String)map.get("description") == getString(R.string.email))
+				String clickedDescription = (String)map.get("description");
+				if(clickedDescription == getString(R.string.email))
 				{
 					Intent i = new Intent(Intent.ACTION_VIEW);
 					Uri mailData = Uri.parse("mailto:"+ (String)map.get("value"));
 					i.setData(mailData);
 					startActivity(Intent.createChooser(i, "Send email"));
 				}
-				if((String)map.get("description") == getString(R.string.phone))
+				if(clickedDescription == getString(R.string.phone) || clickedDescription == getString(R.string.mobile))
 				{
-					SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-					Editor editor = settings.edit();
-					editor.putBoolean(String.format("phone_%d",userID), true);
-					editor.commit();
-					
-					setResult(positionInList);
+					try {
+						Uri singleContact = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts/"+userID);
+						Cursor c = managedQuery(singleContact, null, null, null, null);
+						c.moveToFirst();
+						String strNumber = null;
+						if(clickedDescription == getString(R.string.phone)) {
+							strNumber = c.getString(c.getColumnIndexOrThrow(ContactsProvider.PHONE));
+						} else {
+							strNumber = c.getString(c.getColumnIndexOrThrow(ContactsProvider.MOBILE));
+						}
+						strNumber = strNumber.replace("+", "00").replaceAll("[^0-9]","");
+						long longNum = Long.parseLong(strNumber);
+						Intent callIntent = new Intent(Intent.ACTION_CALL);
+						callIntent.setData(Uri.parse("tel:"+longNum));
+						startActivity(callIntent);
+					} catch (ActivityNotFoundException e) {
+						Log.e("Call function, onClickListener", "Call failed", e);
+					}
 				}
 			}
 		});
