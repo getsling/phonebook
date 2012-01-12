@@ -1,4 +1,4 @@
-package com.gangverk.phonebook;
+package com.gangverk.phonebook.utils;
 
 import android.content.Context;
 import android.util.AttributeSet;

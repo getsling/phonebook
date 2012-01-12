@@ -1,4 +1,4 @@
-package com.gangverk.phonebook;
+package com.gangverk.phonebook.service;
 
 import android.app.Service;
 import android.content.Intent;

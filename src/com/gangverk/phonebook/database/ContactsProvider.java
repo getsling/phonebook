@@ -1,4 +1,4 @@
-package com.gangverk.phonebook;
+package com.gangverk.phonebook.database;
 
 import android.app.SearchManager;
 import android.content.ContentProvider;

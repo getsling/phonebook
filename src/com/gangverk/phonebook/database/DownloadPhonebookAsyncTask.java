@@ -1,4 +1,4 @@
-package com.gangverk.phonebook;
+package com.gangverk.phonebook.database;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

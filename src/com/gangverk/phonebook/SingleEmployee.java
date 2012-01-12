@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.gangverk.phonebook.database.ContactsProvider;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;

@@ -1,4 +1,4 @@
-package com.gangverk.phonebook;
+package com.gangverk.phonebook.service;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

@@ -2,6 +2,11 @@ package com.gangverk.phonebook;
 
 import java.util.ArrayList;
 
+import com.gangverk.phonebook.database.ContactsProvider;
+import com.gangverk.phonebook.database.DownloadPhonebookAsyncTask;
+import com.gangverk.phonebook.service.MannvitService;
+import com.gangverk.phonebook.utils.AlphabetizedAdapter;
+
 import android.app.ListActivity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentProviderOperation;
@@ -42,6 +47,7 @@ public class PhonebookActivity extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		startService(new Intent(getApplicationContext(),MannvitService.class));
+		settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		new DownloadPhonebookAsyncTask(getApplicationContext()).execute();
 		lv = getListView();
 		lv.setFastScrollEnabled(true);
@@ -90,14 +96,12 @@ public class PhonebookActivity extends ListActivity {
 		String[] menuItems = getResources().getStringArray(R.array.phonebook_context_menu);
 		String menuItemName = menuItems[menuItemIndex];
 		if(menuItemName.equals(getResources().getString(R.string.default_workphone))) {
-			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 			Editor editor = settings.edit();
 			editor.putBoolean(String.format("phone_%d",info.id), true);
 			editor.commit();
 			fillPhoneBook(truePosition);
 		}
 		else if(menuItemName.equals(getResources().getString(R.string.default_mobile))) {
-			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 			Editor editor = settings.edit();
 			editor.putBoolean(String.format("phone_%d",info.id), false);
 			editor.commit();
@@ -204,13 +208,14 @@ public class PhonebookActivity extends ListActivity {
 						strNumber = c.getString(c.getColumnIndexOrThrow(ContactsProvider.MOBILE));
 					}
 					strNumber = strNumber.replace("+", "00").replaceAll("[^0-9]","");
+					@SuppressWarnings("unused") // Parse testing so technically used
 					long longNum = Long.parseLong(strNumber);
 					Intent callIntent = new Intent(Intent.ACTION_CALL);
-					callIntent.setData(Uri.parse("tel:"+longNum));
+					callIntent.setData(Uri.parse("tel:"+strNumber));
 					startActivity(callIntent);
 				} catch (ActivityNotFoundException e) {
 					Log.e("Call function, onClickListener", "Call failed", e);
-				} catch (NullPointerException e) {
+				} catch (NumberFormatException e) {
 					Toast.makeText(getApplicationContext(), getString(R.string.invalid_number), Toast.LENGTH_LONG).show();
 				}
 			}

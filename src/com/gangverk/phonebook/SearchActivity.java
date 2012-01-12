@@ -1,5 +1,8 @@
 package com.gangverk.phonebook;
 
+import com.gangverk.phonebook.database.ContactsProvider;
+import com.gangverk.phonebook.utils.AlphabetizedAdapter;
+
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
