@@ -6,5 +6,5 @@
     android:background="@drawable/toast_border"
     android:drawableLeft="@drawable/icon"
     android:text="@string/xmlToast"
-    android:textColor="#FFF"
+    android:textColor="@android:color/white"
     android:gravity="center_vertical" />

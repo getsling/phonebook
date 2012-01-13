@@ -7,7 +7,7 @@
     android:textSize="18sp" 
     android:textStyle="bold"
     android:gravity="left"
-    android:background="@color/mannvit_yellow"
-    android:textColor="@color/mannvit_gray"
+    android:background="@color/theme_foreground"
+    android:textColor="@color/theme_background"
     android:text="@string/xmlLetter"
     />

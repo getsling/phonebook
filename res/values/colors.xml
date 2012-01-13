@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="mannvit_yellow">#ffd327</color>
-    <color name="mannvit_gray">#606163</color>
+    <color name="theme_foreground">#ffd200</color>
+    <color name="theme_background">#606163</color>
 
 </resources>
