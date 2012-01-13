@@ -38,6 +38,8 @@ public class SearchActivity extends Activity {
 	}
 	
 	private void showResults(String query) {
+		String upLetter = query.substring(0, 1).toUpperCase();
+		query = upLetter + query.substring(1);
 		Uri searchContact = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts");
 		String querySearch = query + "%";
 		Cursor cursor = managedQuery(searchContact, null, ContactsProvider.NAME + " LIKE ?", new String[]{querySearch}, null);
@@ -66,7 +68,7 @@ public class SearchActivity extends Activity {
 					Cursor cursor = (Cursor)mListView.getItemAtPosition(position);
 					int intID = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsProvider._ID));
 					long trueID = Long.valueOf(intID);
-					Intent i = new Intent(getApplicationContext(), SingleEmployee.class);   
+					Intent i = new Intent(getApplicationContext(), SingleEmployeeActivity.class);   
 					i.putExtra(ContactsProvider._ID, trueID);
 					startActivity(i); 
 					//Do stuff

@@ -230,7 +230,7 @@ public class PhonebookActivity extends ListActivity {
 		Cursor cursor = (Cursor)l.getItemAtPosition(position);
 		int intID = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsProvider._ID));
 		long trueID = Long.valueOf(intID);
-		Intent i = new Intent(this, SingleEmployee.class);   
+		Intent i = new Intent(this, SingleEmployeeActivity.class);   
 		i.putExtra(ContactsProvider._ID, trueID);
 		startActivity(i); 
 	}

@@ -27,7 +27,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-public class SingleEmployee extends Activity {
+public class SingleEmployeeActivity extends Activity {
 	ListView lv;
 	SimpleAdapter dAdapter;
 	long userID;

@@ -10,7 +10,8 @@
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+        
     <application
         android:debuggable="true"
         android:icon="@drawable/icon"
@@ -37,7 +38,7 @@
                 android:name="android.app.default_searchable"
                 android:value=".SearchActivity" />
         </activity>
-        <activity android:name=".SingleEmployee" />
+        <activity android:name=".SingleEmployeeActivity" />
         <activity android:name=".SearchActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -51,6 +52,9 @@
         <service
             android:name=".service.MannvitService"
             android:process=":mannvit_process" >
+            <intent-filter>
+                <action android:name="com.gangverk.phonebook.service.MannvitService" />
+            </intent-filter>
         </service>
 
         <provider

@@ -9,7 +9,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Intent serviceIntent = new Intent();
-		serviceIntent.setAction("com.gangverk.phonebook.MannvitService");
+		serviceIntent.setAction("com.gangverk.phonebook.service.MannvitService");
 		context.startService(serviceIntent);
 
 	}

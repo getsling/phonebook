@@ -14,7 +14,7 @@ import com.gangverk.phonebook.R;
 import com.gangverk.phonebook.database.ContactsProvider;
 
 public class MyPhoneStateListener extends PhoneStateListener {
-	
+
 	private MyToast mToast;
 	Context context;
 	public MyPhoneStateListener(Context context) {
