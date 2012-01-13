@@ -186,4 +186,5 @@ public class AlphabetizedAdapter extends PhoneAdapter implements SectionIndexer{
 		}
 		return true;
 	}
+
 }

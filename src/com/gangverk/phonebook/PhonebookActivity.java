@@ -1,11 +1,12 @@
 package com.gangverk.phonebook;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-import com.gangverk.phonebook.database.ContactsProvider;
-import com.gangverk.phonebook.database.DownloadPhonebookAsyncTask;
-import com.gangverk.phonebook.service.MannvitService;
-import com.gangverk.phonebook.utils.AlphabetizedAdapter;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.ListActivity;
 import android.content.ActivityNotFoundException;
@@ -36,11 +37,24 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.gangverk.phonebook.database.ContactsProvider;
+import com.gangverk.phonebook.database.DownloadPhonebookAsyncTask;
+import com.gangverk.phonebook.service.MannvitService;
+import com.gangverk.phonebook.utils.AlphabetizedAdapter;
+import com.gangverk.phonebook.utils.SystemUtils;
+
 public class PhonebookActivity extends ListActivity {
 
 	private ListView lv;
 	private AlphabetizedAdapter aAdapter;
 	private SharedPreferences settings; 
+	private Map<Integer, Integer> mapNumberPrefs = null;
+	private static final String SETTINGS_KEY_LAST_DOWNLOAD_CHECK_TIME = "lastDownloadCheckTime";
+	private static final int CHECK_DB_INTERVAL_HOURS = 144; // One week
+	public static final int NUMBER_PREFERENCE_PHONE = 0;
+	public static final int NUMBER_PREFERENCE_MOBILE = 1;
+	public static final String SETTINGS_JSON_NUMBER_PREFERENCE = "settingsJSONNumberPreference";
+
 
 	/** Called when the activity is first created. */
 	@Override
@@ -48,11 +62,16 @@ public class PhonebookActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		startService(new Intent(getApplicationContext(),MannvitService.class));
 		settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		new DownloadPhonebookAsyncTask(getApplicationContext()).execute();
+		long lastGuideDownloadCheckTime = settings.getLong(SETTINGS_KEY_LAST_DOWNLOAD_CHECK_TIME, 0);
+		long currentTime = System.currentTimeMillis() / 1000;
+		if(currentTime - lastGuideDownloadCheckTime > CHECK_DB_INTERVAL_HOURS * 60 * 60) {
+			new DownloadPhonebookAsyncTask(getApplicationContext()).execute();
+		}
 		lv = getListView();
 		lv.setFastScrollEnabled(true);
 		fillPhoneBook(-1);
 		registerForContextMenu(lv);
+		Log.d("onCreate","OC started");
 	}
 
 	@Override
@@ -95,27 +114,50 @@ public class PhonebookActivity extends ListActivity {
 		int menuItemIndex = item.getItemId();
 		String[] menuItems = getResources().getStringArray(R.array.phonebook_context_menu);
 		String menuItemName = menuItems[menuItemIndex];
+		Uri singleContact = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts/" + info.id);
+		Cursor c = managedQuery(singleContact, null, null, null, null);
+		c.moveToFirst();
+		String workPhone = c.getString(c.getColumnIndex(ContactsProvider.PHONE));
+		String mobile = c.getString(c.getColumnIndex(ContactsProvider.MOBILE));
+		String name = c.getString(c.getColumnIndex(ContactsProvider.NAME));
+
 		if(menuItemName.equals(getResources().getString(R.string.default_workphone))) {
-			Editor editor = settings.edit();
-			editor.putBoolean(String.format("phone_%d",info.id), true);
-			editor.commit();
-			fillPhoneBook(truePosition);
+			if(workPhone.length() != 0) {
+				JSONObject numberPreferences = null;
+				try {
+					numberPreferences = new JSONObject(settings.getString(SETTINGS_JSON_NUMBER_PREFERENCE, "{}"));
+					numberPreferences.put(String.valueOf(info.id), NUMBER_PREFERENCE_PHONE);
+					Editor editor = settings.edit();
+					editor.putString(SETTINGS_JSON_NUMBER_PREFERENCE, numberPreferences.toString());
+					editor.commit();
+					fillPhoneBook(truePosition);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			else {
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.number_not_existing), Toast.LENGTH_SHORT).show();
+			}
 		}
 		else if(menuItemName.equals(getResources().getString(R.string.default_mobile))) {
-			Editor editor = settings.edit();
-			editor.putBoolean(String.format("phone_%d",info.id), false);
-			editor.commit();
-			fillPhoneBook(truePosition);
+			if(mobile.length() != 0) {
+				JSONObject numberPreferences = null;
+				try {
+					numberPreferences = new JSONObject(settings.getString(SETTINGS_JSON_NUMBER_PREFERENCE, "{}"));
+					numberPreferences.put(String.valueOf(info.id), NUMBER_PREFERENCE_MOBILE);
+					Editor editor = settings.edit();
+					editor.putString(SETTINGS_JSON_NUMBER_PREFERENCE, numberPreferences.toString());
+					editor.commit();
+					fillPhoneBook(truePosition);
+				}  catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}else {
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.number_not_existing), Toast.LENGTH_SHORT).show();
+			}
 		}
 		else if(menuItemName.equals(getResources().getString(R.string.add_to_contacts))) {
 			ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
-			Uri singleContact = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts/" + info.id);
-			Cursor c = managedQuery(singleContact, null, null, null, null);
-			c.moveToFirst();
-			String workPhone = c.getString(c.getColumnIndex(ContactsProvider.PHONE));
-			String mobile = c.getString(c.getColumnIndex(ContactsProvider.MOBILE));
-			String name = c.getString(c.getColumnIndex(ContactsProvider.NAME));
-
 			ops.add(ContentProviderOperation.newInsert(RawContacts.CONTENT_URI)
 					.withValue(RawContacts.ACCOUNT_TYPE, null)
 					.withValue(RawContacts.ACCOUNT_NAME,null )
@@ -146,6 +188,37 @@ public class PhonebookActivity extends ListActivity {
 				e.printStackTrace();
 			}
 		}
+		else if(menuItemName.equals(getResources().getString(R.string.txtCallContact))) {
+
+			String strNumber = null;
+			boolean usesPhoneNumber = false;
+
+			if(mobile.length() == 0 || checkPhone((int)info.id,mapNumberPrefs,NUMBER_PREFERENCE_PHONE)) {
+				usesPhoneNumber = true;
+			}
+			if(usesPhoneNumber)	{
+				strNumber = workPhone;
+			} else {
+				strNumber = mobile;
+			}
+			strNumber = SystemUtils.fixPhoneNumber(strNumber);
+			if(strNumber.length() != 0) {
+				Intent callIntent = new Intent(Intent.ACTION_CALL);
+				callIntent.setData(Uri.parse("tel:"+strNumber));
+				startActivity(callIntent);
+			} else {
+				Toast.makeText(getApplicationContext(), getString(R.string.invalid_number), Toast.LENGTH_LONG).show();
+			}
+		} else if(menuItemName.equals(getResources().getString(R.string.send_sms))) {
+			mobile = SystemUtils.fixPhoneNumber(mobile);
+			if(mobile.length() != 0) {
+				Intent sendIntent = new Intent(Intent.ACTION_VIEW);         
+				sendIntent.setData(Uri.parse("sms:" + mobile));
+				startActivity(sendIntent);
+			} else { 
+				Toast.makeText(getApplicationContext(), getString(R.string.mobile_missing), Toast.LENGTH_LONG).show();
+			}
+		}
 		else {
 			return false;
 		}
@@ -164,12 +237,24 @@ public class PhonebookActivity extends ListActivity {
 
 	private void fillPhoneBook(int position) 
 	{
+		try {
+			JSONObject preferredNumbers = new JSONObject(settings.getString(SETTINGS_JSON_NUMBER_PREFERENCE, "{}"));
+			Iterator<?> iter = preferredNumbers.keys();
+			mapNumberPrefs = new HashMap<Integer, Integer>();
+			while(iter.hasNext()){
+				String key = (String)iter.next();
+				mapNumberPrefs.put(Integer.parseInt(key), preferredNumbers.getInt(key));
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		Uri allContacts = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts");
 		Cursor c = managedQuery(allContacts, null, null, null, null);
 		String[] from = new String[] { ContactsProvider.NAME, ContactsProvider.MOBILE};
 		int[] to = new int[] { R.id.textLarge, R.id.textSmall1 };
 		aAdapter = new AlphabetizedAdapter(getApplicationContext(), R.layout.phone_item, c, from, to,0);
 		aAdapter.setCallButtonListener(callButtonListener);
+		aAdapter.updateNumberPreferences(mapNumberPrefs);
 		lv.setAdapter(aAdapter);
 		if(position != -1)
 			lv.setSelection(position);
@@ -200,28 +285,43 @@ public class PhonebookActivity extends ListActivity {
 					Uri singleContact = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts/"+id);
 					Cursor c = managedQuery(singleContact, null, null, null, null);
 					c.moveToFirst();
+					String mobile = c.getString(c.getColumnIndex(ContactsProvider.MOBILE));
+					String workPhone = c.getString(c.getColumnIndex(ContactsProvider.PHONE));
 					String strNumber = null;
-					boolean usesPhoneNumber = settings.getBoolean(String.format("phone_%d",id),false);
-					if(usesPhoneNumber)	{
-						strNumber = c.getString(c.getColumnIndex(ContactsProvider.PHONE));
-					} else {
-						strNumber = c.getString(c.getColumnIndexOrThrow(ContactsProvider.MOBILE));
+					boolean usesPhoneNumber = false;
+					if(mobile.length() == 0 || checkPhone((int)id,mapNumberPrefs,NUMBER_PREFERENCE_PHONE)) {
+						usesPhoneNumber = true;
 					}
-					strNumber = strNumber.replace("+", "00").replaceAll("[^0-9]","");
-					@SuppressWarnings("unused") // Parse testing so technically used
-					long longNum = Long.parseLong(strNumber);
-					Intent callIntent = new Intent(Intent.ACTION_CALL);
-					callIntent.setData(Uri.parse("tel:"+strNumber));
-					startActivity(callIntent);
+					if(usesPhoneNumber)	{
+						strNumber = workPhone;
+					} else {
+						strNumber = mobile;
+					}
+					strNumber = SystemUtils.fixPhoneNumber(strNumber);
+					if(strNumber.length() != 0) {
+						Intent callIntent = new Intent(Intent.ACTION_CALL);
+						callIntent.setData(Uri.parse("tel:"+strNumber));
+						startActivity(callIntent);
+					} else {
+						Toast.makeText(getApplicationContext(), getString(R.string.invalid_number), Toast.LENGTH_LONG).show();
+					}
 				} catch (ActivityNotFoundException e) {
 					Log.e("Call function, onClickListener", "Call failed", e);
-				} catch (NumberFormatException e) {
-					Toast.makeText(getApplicationContext(), getString(R.string.invalid_number), Toast.LENGTH_LONG).show();
 				}
 			}
 		}
 	};
 
+	public static boolean checkPhone(int id, Map<Integer,Integer> mapNumberPrefs, int compareToConst) {
+		boolean prefersPhone = false;
+		if(mapNumberPrefs != null) {
+			Integer keyValue = mapNumberPrefs.get(id);
+			if(keyValue!=null && keyValue.intValue() == compareToConst) {
+				prefersPhone = true;
+			}
+		}
+		return prefersPhone;
+	}
 }
 
 

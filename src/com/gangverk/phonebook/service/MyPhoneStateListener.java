@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,15 +28,12 @@ public class MyPhoneStateListener extends PhoneStateListener {
 		switch(state)
 		{
 		case TelephonyManager.CALL_STATE_IDLE:
-			Log.d("DEBUG", "IDLE");
 			mToast.cancel();
 			break;
 		case TelephonyManager.CALL_STATE_OFFHOOK:
-			Log.d("DEBUG", "OFFHOOK");
 			mToast.cancel();
 			break;
 		case TelephonyManager.CALL_STATE_RINGING:
-			Log.d("DEBUG", "RINGING");
 			if(!incomingNumber.equals("")){
 				handleCall(incomingNumber);
 			}

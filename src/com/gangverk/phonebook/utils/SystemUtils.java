@@ -1,4 +1,4 @@
-package com.gangverk.phonebook.database;
+package com.gangverk.phonebook.utils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -138,4 +138,15 @@ public class SystemUtils {
 		return result;
 	}
 
+	/**
+	 * Takes in unformatted phone number and returns callable number
+	 * @param oldNumber The number that needs to get fixed
+	 * @return String that only contains numbers. Replaces + with 00
+	 */
+	public static String fixPhoneNumber(String oldNumber) {
+		String newNumber = null;
+		newNumber = oldNumber.replaceAll("[^0-9+]","");
+		return newNumber;
+		
+	}
 }

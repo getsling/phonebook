@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.gangverk.phonebook.database.ContactsProvider;
+import com.gangverk.phonebook.utils.SystemUtils;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -116,10 +117,9 @@ public class SingleEmployee extends Activity {
 						} else {
 							strNumber = c.getString(c.getColumnIndexOrThrow(ContactsProvider.MOBILE));
 						}
-						strNumber = strNumber.replace("+", "00").replaceAll("[^0-9]","");
-						long longNum = Long.parseLong(strNumber);
+						strNumber = SystemUtils.fixPhoneNumber(strNumber);
 						Intent callIntent = new Intent(Intent.ACTION_CALL);
-						callIntent.setData(Uri.parse("tel:"+longNum));
+						callIntent.setData(Uri.parse("tel:"+strNumber));
 						startActivity(callIntent);
 					} catch (ActivityNotFoundException e) {
 						Log.e("Call function, onClickListener", "Call failed", e);

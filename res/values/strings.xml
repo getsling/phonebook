@@ -3,7 +3,6 @@
 
     <string name="app_name">Mannvit Símaskrá</string>
     <string name="search_hint">Leita í símaskrá</string>
-    <string name="expandable_list_sample_action">Test</string>
     <string name="txtName">Nafn</string>
     <string name="txtTitle">Starfsheiti</string>
     <string name="txtEmail">Netfang</string>
@@ -15,8 +14,10 @@
     <string name="workplace">Vinnustaður</string>
     <string name="phone">Símanúmer</string>
     <string name="mobile">Farsími</string>
+    <string name="number_not_existing">Númer ekki til í grunni.</string>
     <string name="invalid_number">Ógilt númer</string>
     <string name="menu_search">Leita</string>
+    <string name="mobile_missing">Enginn skráður farsími!</string>
     <string name="add_success">Tengilið bætt í símaskrá!</string>
     <string name="no_results">Engar niðurstöður fyrir \"%s\"</string>
     <!-- Shown above search results when we receive a search request. -->

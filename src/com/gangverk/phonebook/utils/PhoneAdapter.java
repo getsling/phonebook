@@ -2,15 +2,13 @@ package com.gangverk.phonebook.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.preference.PreferenceManager;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,15 +16,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gangverk.phonebook.PhonebookActivity;
 import com.gangverk.phonebook.R;
 import com.gangverk.phonebook.database.ContactsProvider;
 
 public class PhoneAdapter extends SimpleCursorAdapter {
 	private View.OnClickListener callButtonListener = null;
-	private SharedPreferences settings; 
+	private Map<Integer, Integer> mapNumberPrefs = null; 
 	public PhoneAdapter(Context context, int layout, Cursor c,String[] from, int[] to, int flags) {
 		super(context, layout, c, from, to, flags);
-		settings = PreferenceManager.getDefaultSharedPreferences(context);
 	}
 
 	@Override
@@ -39,7 +37,7 @@ public class PhoneAdapter extends SimpleCursorAdapter {
 		AssetManager assetManager = context.getAssets();
 		InputStream istr = null;
 		ImageView iv_smallProfilePic = (ImageView)view.findViewById(R.id.smallProfilePic);
-		
+
 		try {
 			istr = assetManager.open("profile/img_"+id+".jpg");
 			Bitmap bitmap = BitmapFactory.decodeStream(istr);
@@ -47,17 +45,12 @@ public class PhoneAdapter extends SimpleCursorAdapter {
 		} catch (IOException e) {
 			iv_smallProfilePic.setImageResource(R.drawable.icon);
 		}
-		
+
 		int checkText = tv_smallText.getText().length();
-		if(checkText == 0) {
-			tv_smallText.setText(phone);
-			Editor editor = settings.edit();
-			editor.putBoolean(String.format("phone_%d",id), true);
-			editor.commit();
-		}
-		// phone_{id} is set if the user prefers phone instead of mobile
-		boolean usesPhoneNumber = settings.getBoolean(String.format("phone_%d",id),false);
-		if(usesPhoneNumber)	{
+		boolean prefersPhone = false;
+		prefersPhone = PhonebookActivity.checkPhone(id,mapNumberPrefs,PhonebookActivity.NUMBER_PREFERENCE_PHONE);
+		
+		if(checkText == 0 || prefersPhone) {
 			tv_smallText.setText(phone);
 		}
 	}
@@ -72,5 +65,10 @@ public class PhoneAdapter extends SimpleCursorAdapter {
 
 	public void setCallButtonListener(OnClickListener callButtonListener) {
 		this.callButtonListener = callButtonListener;
+	}
+
+	public void updateNumberPreferences(Map<Integer,Integer> mapNumberPrefs) {
+		this.mapNumberPrefs  = mapNumberPrefs;
+
 	}
 }
