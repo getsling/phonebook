@@ -7,4 +7,5 @@
     android:drawableLeft="@drawable/icon"
     android:text="@string/xmlToast"
     android:textColor="@android:color/white"
-    android:gravity="center_vertical" />
+    android:gravity="center_vertical" 
+    android:drawablePadding="6dp" />

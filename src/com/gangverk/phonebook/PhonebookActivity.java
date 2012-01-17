@@ -8,7 +8,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentProviderOperation;
 import android.content.Intent;
@@ -25,6 +25,7 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.provider.ContactsContract.Contacts.Data;
 import android.provider.ContactsContract.RawContacts;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -35,6 +36,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gangverk.phonebook.database.ContactsProvider;
@@ -43,7 +45,7 @@ import com.gangverk.phonebook.service.MannvitService;
 import com.gangverk.phonebook.utils.AlphabetizedAdapter;
 import com.gangverk.phonebook.utils.SystemUtils;
 
-public class PhonebookActivity extends ListActivity {
+public class PhonebookActivity extends Activity {
 
 	private ListView lv;
 	private AlphabetizedAdapter aAdapter;
@@ -60,6 +62,7 @@ public class PhonebookActivity extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
 		startService(new Intent(getApplicationContext(),MannvitService.class));
 		settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		long lastGuideDownloadCheckTime = settings.getLong(SETTINGS_KEY_LAST_DOWNLOAD_CHECK_TIME, 0);
@@ -67,9 +70,11 @@ public class PhonebookActivity extends ListActivity {
 		if(currentTime - lastGuideDownloadCheckTime > CHECK_DB_INTERVAL_HOURS * 60 * 60) {
 			new DownloadPhonebookAsyncTask(getApplicationContext()).execute();
 		}
-		lv = getListView();
+		lv = (ListView)findViewById(R.id.mainListView);
+		lv.setTextFilterEnabled(true);
 		lv.setFastScrollEnabled(true);
-		fillPhoneBook(-1);
+
+		fillPhoneBook(-1,null,this.lv);
 		registerForContextMenu(lv);
 		Log.d("onCreate","OC started");
 	}
@@ -109,8 +114,7 @@ public class PhonebookActivity extends ListActivity {
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-		ListView lvContext = getListView();
-		int truePosition = lvContext.getFirstVisiblePosition();
+		TextView numberView = (TextView)info.targetView.findViewById(R.id.textSmall1);
 		int menuItemIndex = item.getItemId();
 		String[] menuItems = getResources().getStringArray(R.array.phonebook_context_menu);
 		String menuItemName = menuItems[menuItemIndex];
@@ -130,7 +134,7 @@ public class PhonebookActivity extends ListActivity {
 					Editor editor = settings.edit();
 					editor.putString(SETTINGS_JSON_NUMBER_PREFERENCE, numberPreferences.toString());
 					editor.commit();
-					fillPhoneBook(truePosition);
+					numberView.setText(workPhone);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -148,7 +152,7 @@ public class PhonebookActivity extends ListActivity {
 					Editor editor = settings.edit();
 					editor.putString(SETTINGS_JSON_NUMBER_PREFERENCE, numberPreferences.toString());
 					editor.commit();
-					fillPhoneBook(truePosition);
+					numberView.setText(mobile);
 				}  catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -225,18 +229,9 @@ public class PhonebookActivity extends ListActivity {
 		return true;
 	}
 
-	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-		Cursor cursor = (Cursor)l.getItemAtPosition(position);
-		int intID = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsProvider._ID));
-		long trueID = Long.valueOf(intID);
-		Intent i = new Intent(this, SingleEmployeeActivity.class);   
-		i.putExtra(ContactsProvider._ID, trueID);
-		startActivity(i); 
-	}
-
-	private void fillPhoneBook(int position) 
+	protected int fillPhoneBook(int position, String query, final ListView lv) 
 	{
+		this.lv = lv;
 		try {
 			JSONObject preferredNumbers = new JSONObject(settings.getString(SETTINGS_JSON_NUMBER_PREFERENCE, "{}"));
 			Iterator<?> iter = preferredNumbers.keys();
@@ -249,7 +244,18 @@ public class PhonebookActivity extends ListActivity {
 			e.printStackTrace();
 		}
 		Uri allContacts = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts");
-		Cursor c = managedQuery(allContacts, null, null, null, null);
+		String selection = null;
+		String[] selectionArgs = null;
+		if(!TextUtils.isEmpty(query))	{
+			String upLetter = query.substring(0, 1).toUpperCase();
+			query = upLetter + query.substring(1);
+			selection = ContactsProvider.NAME + " LIKE ?";
+			selectionArgs = new String[]{query + "%"};
+		}
+		Cursor c = managedQuery(allContacts, null, selection, selectionArgs, null);
+		if(!c.moveToFirst()) {
+			return 0;
+		}
 		String[] from = new String[] { ContactsProvider.NAME, ContactsProvider.MOBILE};
 		int[] to = new int[] { R.id.textLarge, R.id.textSmall1 };
 		aAdapter = new AlphabetizedAdapter(getApplicationContext(), R.layout.phone_item, c, from, to,0);
@@ -258,6 +264,19 @@ public class PhonebookActivity extends ListActivity {
 		lv.setAdapter(aAdapter);
 		if(position != -1)
 			lv.setSelection(position);
+		lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
+				Cursor cursor = (Cursor)lv.getItemAtPosition(position);
+				int intID = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsProvider._ID));
+				long trueID = Long.valueOf(intID);
+				Intent i = new Intent(getApplicationContext(), SingleEmployeeActivity.class);   
+				i.putExtra(ContactsProvider._ID, trueID);
+				startActivity(i); 
+
+			}
+		});
+		return c.getCount();
 	}
 
 	@Override
@@ -275,10 +294,10 @@ public class PhonebookActivity extends ListActivity {
 		super.onResume();
 	}
 
-	private OnClickListener callButtonListener = new OnClickListener() {
+	protected OnClickListener callButtonListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			final int position = getListView().getPositionForView(v);
+			final int position = lv.getPositionForView(v);
 			long id = aAdapter.getItemId(position);
 			if (position != ListView.INVALID_POSITION) {
 				try {

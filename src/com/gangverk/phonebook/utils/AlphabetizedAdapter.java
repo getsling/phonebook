@@ -1,34 +1,50 @@
 package com.gangverk.phonebook.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AlphabetIndexer;
+import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
+import com.gangverk.phonebook.PhonebookActivity;
 import com.gangverk.phonebook.R;
 import com.gangverk.phonebook.database.ContactsProvider;
 
-public class AlphabetizedAdapter extends PhoneAdapter implements SectionIndexer{
+public class AlphabetizedAdapter extends SimpleCursorAdapter implements SectionIndexer, Filterable{
 
 	private static final int TYPE_HEADER = 1;
 	private static final int TYPE_NORMAL = 0;
 	private static final int TYPE_COUNT = 2;
 
+	private View.OnClickListener callButtonListener = null;
+	private Map<Integer, Integer> mapNumberPrefs = null;
 	private AlphabetIndexer indexer;
 	private int[] usedSectionNumbers;
 	private Map<Integer, Integer> sectionToOffset;
 	private Map<Integer, Integer> sectionToPosition;
 	private final LayoutInflater mLayoutInflater;
+	private Context context;
+
 	public AlphabetizedAdapter(Context context, int layout, Cursor c,String[] from, int[] to, int flags) {
 		super(context, layout, c, from, to, flags);
+		this.context = context;
 		mLayoutInflater = LayoutInflater.from(context);
 		indexer = new AlphabetIndexer(c, c.getColumnIndexOrThrow(ContactsProvider.NAME), "ABCDEFGHIJKLMNOPQRSTUVWXYZÞÆÖ ");
 		sectionToPosition = new TreeMap<Integer, Integer>(); //use a TreeMap because we are going to iterate over its keys in sorted order
@@ -133,7 +149,7 @@ public class AlphabetizedAdapter extends PhoneAdapter implements SectionIndexer{
 		}
 		return usedSectionNumbers[i-1];
 	}
-	
+
 	@Override
 	public Object[] getSections() {
 		return indexer.getSections();
@@ -154,6 +170,7 @@ public class AlphabetizedAdapter extends PhoneAdapter implements SectionIndexer{
 	//return the header view, if it's in a section header position
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+
 		final int type = getItemViewType(position);
 		if (type == TYPE_HEADER){
 			if (convertView == null){
@@ -165,6 +182,50 @@ public class AlphabetizedAdapter extends PhoneAdapter implements SectionIndexer{
 		return super.getView(position - sectionToOffset.get(getSectionForPosition(position)) - 1, convertView, parent); 
 	}
 
+	@Override
+	public void bindView(View view, Context context, Cursor cursor) {
+		super.bindView(view, context, cursor);
+		int id = cursor.getInt(cursor.getColumnIndex(ContactsProvider._ID));
+		String phone = cursor.getString(cursor.getColumnIndex(ContactsProvider.PHONE));
+		TextView tv_smallText = (TextView)view.findViewById(R.id.textSmall1);
+
+		AssetManager assetManager = context.getAssets();
+		InputStream istr = null;
+		ImageView iv_smallProfilePic = (ImageView)view.findViewById(R.id.smallProfilePic);
+
+		try {
+			istr = assetManager.open("profile/img_"+id+".jpg");
+			Bitmap bitmap = BitmapFactory.decodeStream(istr);
+			iv_smallProfilePic.setImageBitmap(bitmap);
+		} catch (IOException e) {
+			iv_smallProfilePic.setImageResource(R.drawable.icon);
+		}
+
+		int checkText = tv_smallText.getText().length();
+		boolean prefersPhone = false;
+		prefersPhone = PhonebookActivity.checkPhone(id,mapNumberPrefs,PhonebookActivity.NUMBER_PREFERENCE_PHONE);
+
+		if(checkText == 0 || prefersPhone) {
+			tv_smallText.setText(phone);
+		}
+	}
+
+	@Override
+	public View newView(Context context, Cursor cursor, ViewGroup parent) {
+		View view = super.newView(context, cursor, parent);		
+		DontPressWithParentImgButton btnCall = (DontPressWithParentImgButton)view.findViewById(R.id.btnCall);
+		btnCall.setOnClickListener(callButtonListener);
+		return view;
+	}
+
+	public void setCallButtonListener(OnClickListener callButtonListener) {
+		this.callButtonListener = callButtonListener;
+	}
+
+	public void updateNumberPreferences(Map<Integer,Integer> mapNumberPrefs) {
+		this.mapNumberPrefs  = mapNumberPrefs;
+
+	}
 	@Override
 	public Cursor swapCursor(Cursor c) {
 		Cursor oldCursor = super.swapCursor(c);
@@ -185,6 +246,48 @@ public class AlphabetizedAdapter extends PhoneAdapter implements SectionIndexer{
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
+		if (getFilterQueryProvider() != null) { return getFilterQueryProvider().runQuery(constraint); }
+
+		Uri searchContact = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts");
+		String querySearch = (constraint == null) ? null : constraint + "%";
+		String selection = (constraint == null) ? null : ContactsProvider.NAME + " LIKE ?";
+		Cursor mCursor = context.getContentResolver().query(searchContact, null,selection, new String[]{querySearch}, null);
+		indexer.setCursor(mCursor);
+		sectionToPosition = new TreeMap<Integer, Integer>(); //use a TreeMap because we are going to iterate over its keys in sorted order
+		sectionToOffset = new HashMap<Integer, Integer>();
+		int count = 0;
+		if (mCursor != null) {
+			count = mCursor.getCount();
+		} else {
+			count = 0;
+		}
+		int i;
+		//temporarily have a map alphabet section to first index it appears
+		//(this map is going to be doing somethine else later)
+		for (i = count - 1 ; i >= 0; i--){
+			sectionToPosition.put(indexer.getSectionForPosition(i), i);
+		}
+
+		i = 0;
+		usedSectionNumbers = new int[sectionToPosition.keySet().size()];
+
+		//note that for each section that appears before a position, we must offset our
+		//indices by 1, to make room for an alphabetical header in our list
+		for (Integer section : sectionToPosition.keySet()){
+			sectionToOffset.put(section, i);
+			usedSectionNumbers[i] = section;
+			i++;
+		}
+
+		//use offset to map the alphabet sections to their actual indicies in the list
+		for(Integer section: sectionToPosition.keySet()){
+			sectionToPosition.put(section, sectionToPosition.get(section) + sectionToOffset.get(section));
+		}
+		return mCursor;
 	}
 
 }
