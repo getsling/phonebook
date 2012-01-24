@@ -6,9 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.gangverk.phonebook.database.ContactsProvider;
-import com.gangverk.phonebook.utils.SystemUtils;
-
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -21,15 +18,20 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import com.gangverk.phonebook.database.ContactsProvider;
+import com.gangverk.phonebook.utils.ImageHelper;
+import com.gangverk.phonebook.utils.SingleEmployeeAdapter;
+import com.gangverk.phonebook.utils.SystemUtils;
 
 public class SingleEmployeeActivity extends Activity {
 	ListView lv;
-	SimpleAdapter dAdapter;
+	SingleEmployeeAdapter dAdapter;
 	long userID;
 
 	@Override
@@ -44,6 +46,7 @@ public class SingleEmployeeActivity extends Activity {
 		try {
 			istr = assetManager.open("profile/img_"+userID+".jpg");
 			Bitmap bitmap = BitmapFactory.decodeStream(istr);
+			bitmap = ImageHelper.getRoundedCornerBitmap(bitmap, 10);
 			IV_profilePic.setImageBitmap(bitmap);
 		} catch (IOException e) {
 			IV_profilePic.setImageResource(R.drawable.icon);
@@ -87,9 +90,10 @@ public class SingleEmployeeActivity extends Activity {
 
 		String[] from = new String[] {"description","value"};
 		int[] to = new int[] { R.id.singleListDescription, R.id.singleListValue  };
-		dAdapter = new SimpleAdapter(this,valueList,R.layout.single_employee_listview_item,from,to );
+		dAdapter = new SingleEmployeeAdapter(this,valueList,R.layout.single_employee_listview_item,from,to );
 		lv = (ListView) findViewById(R.id.singleDescriptionListview);
 		lv.setAdapter(dAdapter);
+		dAdapter.setCallButtonListener(callButtonListener);
 		lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
@@ -98,6 +102,7 @@ public class SingleEmployeeActivity extends Activity {
 				@SuppressWarnings("unchecked")
 				HashMap<String,String> map = (HashMap<String,String>) o;
 				String clickedDescription = (String)map.get("description");
+				String clickedValue = (String)map.get("value");
 				if(clickedDescription == getString(R.string.email))
 				{
 					Intent i = new Intent(Intent.ACTION_VIEW);
@@ -108,22 +113,22 @@ public class SingleEmployeeActivity extends Activity {
 				if(clickedDescription == getString(R.string.phone) || clickedDescription == getString(R.string.mobile))
 				{
 					try {
-						Uri singleContact = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts/"+userID);
-						Cursor c = managedQuery(singleContact, null, null, null, null);
-						c.moveToFirst();
-						String strNumber = null;
-						if(clickedDescription == getString(R.string.phone)) {
-							strNumber = c.getString(c.getColumnIndexOrThrow(ContactsProvider.PHONE));
-						} else {
-							strNumber = c.getString(c.getColumnIndexOrThrow(ContactsProvider.MOBILE));
-						}
-						strNumber = SystemUtils.fixPhoneNumber(strNumber);
+						String strNumber = SystemUtils.fixPhoneNumber(clickedValue);
 						Intent callIntent = new Intent(Intent.ACTION_CALL);
 						callIntent.setData(Uri.parse("tel:"+strNumber));
 						startActivity(callIntent);
 					} catch (ActivityNotFoundException e) {
 						Log.e("Call function, onClickListener", "Call failed", e);
 					}
+				} else if(clickedDescription == getString(R.string.workplace)) {
+					clickedValue = clickedValue.replaceAll("[0-9]", "");
+					String nearString = "&near=iceland";
+					if(clickedValue.contains("Grens‡s")) {
+						nearString = "&near=reykjavik,iceland"; 
+					}
+					Intent mapIntent = new Intent(Intent.ACTION_VIEW);
+					mapIntent.setData(Uri.parse("geo:0,0?q="+clickedValue+nearString));
+					startActivity(mapIntent);
 				}
 			}
 		});
@@ -131,4 +136,27 @@ public class SingleEmployeeActivity extends Activity {
 		tv_name.setText(dbName);
 		tv_title.setText(dbTitle);
 	}
+	
+	protected OnClickListener callButtonListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			final int position = lv.getPositionForView(v);
+			Object o = lv.getItemAtPosition(position);
+			@SuppressWarnings("unchecked")
+			HashMap<String,String> map = (HashMap<String,String>) o;
+			String clickedDescription = (String)map.get("description");
+			String clickedValue = (String)map.get("value");
+			if(clickedDescription == getString(R.string.phone) || clickedDescription == getString(R.string.mobile))
+			{
+				try {
+					String strNumber = SystemUtils.fixPhoneNumber(clickedValue);
+					Intent callIntent = new Intent(Intent.ACTION_CALL);
+					callIntent.setData(Uri.parse("tel:"+strNumber));
+					startActivity(callIntent);
+				} catch (ActivityNotFoundException e) {
+					Log.e("Call function, onClickListener", "Call failed", e);
+				}
+			}
+		}
+	};
 }

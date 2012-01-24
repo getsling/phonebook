@@ -6,7 +6,10 @@
     <string name="xmlNoOfResults">Number of results</string>
     <string name="xmlLetter">L (Letter)</string>
     <string name="xmlProfilePic">Small profile picture</string>
+    <string name="xmlProfilePicture">Profile picture</string>
     <string name="xmlToastPic">Toast picture</string>
     <string name="xmlToast">Toast message</string>
+    <string name="xmlDescription">Description</string>
+    <string name="xmlValue">Value</string>
 
 </resources>

@@ -9,8 +9,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ContentProviderOperation;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
@@ -49,20 +51,25 @@ public class PhonebookActivity extends Activity {
 
 	private ListView lv;
 	private AlphabetizedAdapter aAdapter;
-	private SharedPreferences settings; 
+	protected SharedPreferences settings; 
 	private Map<Integer, Integer> mapNumberPrefs = null;
 	private static final String SETTINGS_KEY_LAST_DOWNLOAD_CHECK_TIME = "lastDownloadCheckTime";
 	private static final int CHECK_DB_INTERVAL_HOURS = 144; // One week
 	public static final int NUMBER_PREFERENCE_PHONE = 0;
 	public static final int NUMBER_PREFERENCE_MOBILE = 1;
 	public static final String SETTINGS_JSON_NUMBER_PREFERENCE = "settingsJSONNumberPreference";
-
+	private AlertDialog filterDialog = null;
+	private AlertDialog subFilterDialog = null;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		initializeActivity();
+	}
+
+	protected void initializeActivity() {
 		startService(new Intent(getApplicationContext(),MannvitService.class));
 		settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		long lastGuideDownloadCheckTime = settings.getLong(SETTINGS_KEY_LAST_DOWNLOAD_CHECK_TIME, 0);
@@ -73,10 +80,8 @@ public class PhonebookActivity extends Activity {
 		lv = (ListView)findViewById(R.id.mainListView);
 		lv.setTextFilterEnabled(true);
 		lv.setFastScrollEnabled(true);
-
-		fillPhoneBook(-1,null,this.lv);
+		fillPhoneBook(-1,null,lv,0);
 		registerForContextMenu(lv);
-		Log.d("onCreate","OC started");
 	}
 
 	@Override
@@ -91,6 +96,70 @@ public class PhonebookActivity extends Activity {
 		switch (item.getItemId()) {
 		case R.id.search:
 			onSearchRequested();
+			return true;
+		case R.id.filter:
+			CharSequence[] array = {getString(R.string.workplace), getString(R.string.division)};
+			filterDialog =  new AlertDialog.Builder(this)
+			.setSingleChoiceItems(array, -1, new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Uri allContacts = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts");
+					String selection = null;
+					String[] selectionArgs = null;
+					if(which == 0) {
+						final String workplaceAddress = "address";
+						final Cursor c = managedQuery(allContacts, new String[] {ContactsProvider._ID,workplaceAddress}, selection, selectionArgs, workplaceAddress +" COLLATE LOCALIZED ASC");
+						if(c.getCount() != 0) {
+							subFilterDialog = new AlertDialog.Builder(PhonebookActivity.this) 
+							.setSingleChoiceItems(c, -1, workplaceAddress,new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									int filterType = 1; // Workplace filter equals 1 
+									c.moveToPosition(which);
+									String pressedItem = c.getString(c.getColumnIndex(workplaceAddress));
+									Intent i = new Intent(PhonebookActivity.this, FilteredActivity.class);
+									i.putExtra("com.gangverk.phonebook.query", pressedItem);
+									i.putExtra("com.gangverk.phonebook.filter_type", filterType);
+									startActivity(i);
+									subFilterDialog.dismiss();
+									filterDialog.dismiss();
+								}
+							}).create();
+
+							subFilterDialog.show();
+						} else {
+							Toast.makeText(PhonebookActivity.this, getString(R.string.no_divisions), Toast.LENGTH_LONG).show();
+						}
+					} else if(which == 1) {
+						final String divisionName = "name";
+						final Cursor c = managedQuery(allContacts, new String[] {ContactsProvider._ID,divisionName}, selection, selectionArgs, divisionName +" COLLATE LOCALIZED ASC");
+						if(c.getCount() != 0) {
+							subFilterDialog = new AlertDialog.Builder(PhonebookActivity.this) 
+							.setSingleChoiceItems(c, -1, divisionName,new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									int filterType = 2; // Division filter equals 2 
+									c.moveToPosition(which);
+									String pressedItem = c.getString(c.getColumnIndex(divisionName));
+									Intent i = new Intent(PhonebookActivity.this, FilteredActivity.class);
+									i.putExtra("com.gangverk.phonebook.query", pressedItem);
+									i.putExtra("com.gangverk.phonebook.filter_type", filterType);
+									startActivity(i);
+									subFilterDialog.dismiss();
+									filterDialog.dismiss();
+								}
+							}).create();
+
+							subFilterDialog.show();
+						} else {
+							Toast.makeText(PhonebookActivity.this, getString(R.string.no_divisions), Toast.LENGTH_LONG).show();
+						}
+					}
+				}
+			}).create();
+			filterDialog.setTitle(getString(R.string.pick_filter));
+			filterDialog.show();
 			return true;
 		default:
 			return false;
@@ -229,7 +298,16 @@ public class PhonebookActivity extends Activity {
 		return true;
 	}
 
-	protected int fillPhoneBook(int position, String query, final ListView lv) 
+	/**
+	 * A method that fills the phonebook list using alphabetized adapter. Creates a cursor from a special query string.
+	 * 
+	 * @param position The position that the listview displaying the results should start at
+	 * @param query The query on the content provider. Rather specialized string depending on flags
+	 * @param lv The listview that displays the results
+	 * @param searchFlags Set this to define which column to query on. Used in filters for example
+	 * @return Number of items in listview
+	 */
+	protected int fillPhoneBook(int position, String query, final ListView lv, int searchFlags) 
 	{
 		this.lv = lv;
 		try {
@@ -247,10 +325,21 @@ public class PhonebookActivity extends Activity {
 		String selection = null;
 		String[] selectionArgs = null;
 		if(!TextUtils.isEmpty(query))	{
-			String upLetter = query.substring(0, 1).toUpperCase();
-			query = upLetter + query.substring(1);
-			selection = ContactsProvider.NAME + " LIKE ?";
-			selectionArgs = new String[]{query + "%"};
+			switch(searchFlags) {
+			case 1:
+				selection = ContactsProvider.WORKPLACE + " = ?";
+				selectionArgs = new String[]{query};
+				break;
+			case 2:
+
+				break;
+			default:
+				String upLetter = query.substring(0, 1).toUpperCase();
+				query = upLetter + query.substring(1);
+				selection = ContactsProvider.NAME + " LIKE ?";
+				selectionArgs = new String[]{query + "%"};
+				break;
+			}
 		}
 		Cursor c = managedQuery(allContacts, null, selection, selectionArgs, null);
 		if(!c.moveToFirst()) {
@@ -330,7 +419,7 @@ public class PhonebookActivity extends Activity {
 			}
 		}
 	};
-
+	
 	public static boolean checkPhone(int id, Map<Integer,Integer> mapNumberPrefs, int compareToConst) {
 		boolean prefersPhone = false;
 		if(mapNumberPrefs != null) {

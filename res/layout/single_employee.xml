@@ -16,7 +16,7 @@
             android:id="@+id/profilePic"
             android:layout_width="120dp"
             android:layout_height="fill_parent"
-            android:contentDescription="@string/profilePicture"
+            android:contentDescription="@string/xmlProfilePicture"
             android:src="@drawable/icon" />
 
         <LinearLayout

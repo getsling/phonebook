@@ -81,7 +81,17 @@ public class ContactsProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder sqlBuilder = new SQLiteQueryBuilder();
-		sqlBuilder.setTables(TABLE);
+
+		// SHIT MIX: this is because of not being able to pass table name in the query. Hopefully this will get solved
+		if(projection != null) {
+			if(projection[1].equals("address")) {
+				sqlBuilder.setTables("workplace");			
+			} else if(projection[1].equals("name")) {
+				sqlBuilder.setTables("division");	
+			}
+		} else {
+			sqlBuilder.setTables(TABLE);
+		}
 		int uriMatch = uriMatcher.match(uri);
 		if (uriMatch == CONTACT_ID)
 			// If getting a particular contact
