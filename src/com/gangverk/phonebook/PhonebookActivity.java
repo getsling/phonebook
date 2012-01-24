@@ -54,7 +54,7 @@ public class PhonebookActivity extends Activity {
 	protected SharedPreferences settings; 
 	private Map<Integer, Integer> mapNumberPrefs = null;
 	private static final String SETTINGS_KEY_LAST_DOWNLOAD_CHECK_TIME = "lastDownloadCheckTime";
-	private static final int CHECK_DB_INTERVAL_HOURS = 144; // One week
+	private static final int CHECK_DB_INTERVAL_HOURS = 7; // One week
 	public static final int NUMBER_PREFERENCE_PHONE = 0;
 	public static final int NUMBER_PREFERENCE_MOBILE = 1;
 	public static final String SETTINGS_JSON_NUMBER_PREFERENCE = "settingsJSONNumberPreference";
@@ -74,7 +74,7 @@ public class PhonebookActivity extends Activity {
 		settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		long lastGuideDownloadCheckTime = settings.getLong(SETTINGS_KEY_LAST_DOWNLOAD_CHECK_TIME, 0);
 		long currentTime = System.currentTimeMillis() / 1000;
-		if(currentTime - lastGuideDownloadCheckTime > CHECK_DB_INTERVAL_HOURS * 60 * 60) {
+		if(currentTime - lastGuideDownloadCheckTime > CHECK_DB_INTERVAL_HOURS * 24 * 60 * 60) {
 			new DownloadPhonebookAsyncTask(getApplicationContext()).execute();
 		}
 		lv = (ListView)findViewById(R.id.mainListView);

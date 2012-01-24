@@ -1,38 +1,26 @@
 package com.gangverk.phonebook.database;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.File;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.gangverk.phonebook.utils.SystemUtils;
+import org.apache.http.HttpStatus;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.util.Log;
+
+import com.gangverk.phonebook.utils.SystemUtils;
 
 public class DownloadPhonebookAsyncTask extends AsyncTask<Void, Void, Void> {
-	private static final String LOG_TAG = "DownloadPhonebookAsyncTask";
-	private static final int CHECK_DB_INTERVAL_HOURS = 1;
 	private static final String SETTINGS_KEY_LAST_DOWNLOAD_CHECK_TIME = "lastDownloadCheckTime";
-	private static final String SETTINGS_KEY_DB_TIME = "lastDbTime";
 	public static final String SETTINGS_KEY_HAS_NEW_DB = "hasNewDb";
-	private static final String PHONEBOOK_BASEURL = "http://stash.gangverk.is";
+	private static final String PHONEBOOK_BASEURL = "http://192.168.80.95/~hoddih/";
 	public static final String DOWNLOADED_DB_FILENAME = "mannvit_staff.sqlite";
 	
 	private boolean fetched_db;
-	private long newestDbTime, currentTime;
+	private long currentTime;
 	private Context context;
 	
 	
@@ -43,56 +31,25 @@ public class DownloadPhonebookAsyncTask extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected Void doInBackground(Void... args) {
-        // get last db download date from preferences
-    	SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        long lastGuideDownloadCheckTime = settings.getLong(SETTINGS_KEY_LAST_DOWNLOAD_CHECK_TIME, 0);
-        int lastDbTime = settings.getInt(SETTINGS_KEY_DB_TIME, 0);
-    	boolean hasDownloadedDatabase = settings.getBoolean(SETTINGS_KEY_HAS_NEW_DB, false);
-    	String dbNameSchema = "phonebook_db";
-		fetched_db = false;
-    	newestDbTime = 0;
-        currentTime = System.currentTimeMillis() / 1000;
-        // The database helper has to have cleaned up any previous downloads before we go again
-        if(!hasDownloadedDatabase && currentTime - lastGuideDownloadCheckTime > CHECK_DB_INTERVAL_HOURS * 60 * 60) {
-        	// on-device db might be stale, check if online version is more recent
-        	HttpClient httpClient = new DefaultHttpClient();
-        	String dateCheckUrl = String.format("%s/%s.last_update.json", PHONEBOOK_BASEURL, dbNameSchema);
-        	HttpGet httpGet = new HttpGet(dateCheckUrl);
-        	try {
-        		HttpResponse response = httpClient.execute(httpGet);
-        		StatusLine statusLine = response.getStatusLine();
-        		int statusCode = statusLine.getStatusCode();
-        		if(statusCode == 200) {
-        			HttpEntity entity = response.getEntity();
-        			JSONObject jsonObject = new JSONObject(SystemUtils.stringFromStream(entity.getContent()));
-            		newestDbTime = jsonObject.getLong("last_update");
-        		} else {
-        			Log.e(LOG_TAG,String.format("Failed to download file (http code: %s, url: %s)",statusCode,dateCheckUrl));
-        		}
-        	} catch(ClientProtocolException e) {
-        		e.printStackTrace();
-        	} catch (IOException e) {
-        		e.printStackTrace();
-        	} catch (JSONException e) {
-				e.printStackTrace();
+		String db_name = "mannvit_staff.sqlite";
+		File dbFile = context.getDatabasePath(db_name);
+		long localDBDate = dbFile.lastModified();
+		currentTime = System.currentTimeMillis() /1000;
+		URL url = null;
+		HttpURLConnection urlConnection = null;
+		try {
+			url = new URL(PHONEBOOK_BASEURL + DOWNLOADED_DB_FILENAME);
+			urlConnection = (HttpURLConnection) url.openConnection();
+			urlConnection.setDoInput(true);
+			urlConnection.setIfModifiedSince(localDBDate);
+			urlConnection.connect();
+			if(urlConnection.getResponseCode() == HttpStatus.SC_OK) {
+				SystemUtils.copyInputStreamToOutputStream(urlConnection.getInputStream(), context.openFileOutput(DOWNLOADED_DB_FILENAME,Context.MODE_PRIVATE));
+				fetched_db = true;
 			}
-        	
-        	// Check if db has been updated since we last checked it
-            if(newestDbTime > lastDbTime) {
-            	// Remote database was updated, need to download new version
-            	try {
-					Log.d(LOG_TAG,"Starting database file download");
-					URL dbUrl = new URL(String.format("%s/%s",PHONEBOOK_BASEURL, String.format("%s.sqlite.gz",dbNameSchema)));
-					SystemUtils.copyInputStreamToOutputStream(dbUrl.openConnection().getInputStream(), context.openFileOutput(DOWNLOADED_DB_FILENAME,Context.MODE_PRIVATE));
-					Log.d(LOG_TAG,"Downloaded new database file");
-	            	fetched_db = true;
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-            }
-        }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
         return null;
 	}
 		
@@ -102,7 +59,6 @@ public class DownloadPhonebookAsyncTask extends AsyncTask<Void, Void, Void> {
         settingsEditor.putLong(SETTINGS_KEY_LAST_DOWNLOAD_CHECK_TIME, currentTime);
         settingsEditor.commit();
         if(fetched_db) {
-        	settingsEditor.putLong(SETTINGS_KEY_DB_TIME,newestDbTime);
         	settingsEditor.putBoolean(SETTINGS_KEY_HAS_NEW_DB, true);
             settingsEditor.commit();
         }
