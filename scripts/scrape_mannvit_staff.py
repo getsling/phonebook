@@ -1,3 +1,4 @@
+#!/usr/bin/python
 BASE_URL = "http://mannvit.is/"
 BASE_PATH = "htmlfiles/"
 STAFF_URL = "%sMannvit/Starfsmenn/" % (BASE_URL,)
@@ -53,6 +54,7 @@ def main():
 	staff_div = tree.find('.//div[@class="staff_search"]/div[@class="list"]')
 	employees = []
 	for row in staff_div.findall('.//tr'):
+		titleover = False
 		cols = row.findall('./td')
 		if len(cols) == 3:
 			stafflink = '%s%s' % (BASE_URL,cols[0].find('./a').get('href'))
@@ -75,11 +77,13 @@ def main():
 				else:
 					subitem = item.find('./label')
 					if subitem != None:
+						titleover = True
 						#<div><label>title</label>value</div>
 						itemtype = subitem.text.strip()
 						itemvalue = value
 					else:
 						if item.tag == 'label':
+							titleover = True
 							#<label>title</label><div>value</div>
 							state = value
 							continue
@@ -91,7 +95,12 @@ def main():
 							else:
 								itemvalue = value
 						else:
-							continue
+							if not titleover and item.tag == 'div':
+								titleover = True
+								itemtype = 'title'
+								itemvalue = value
+							else:
+								continue
 				employee['id'] = staff_id
 				if itemtype.startswith('Vinnust'):
 					if itemvalue in workplaces:
@@ -102,6 +111,8 @@ def main():
 					employee['workplace'] = workplace_id
 				elif itemtype.startswith('name'):
 					employee['name'] = itemvalue
+				elif itemtype.startswith('title'):
+					employee['title'] = itemvalue
 				elif itemtype.startswith('Beinn'):
 					employee['phone'] = parse_phone(itemvalue)
 				elif itemtype.startswith('GSM'):
@@ -109,7 +120,6 @@ def main():
 				elif itemtype.startswith('Netfa'):
 					employee['email'] = itemvalue
 				else:
-					#print "NOT USED:",itemtype,itemvalue
 					pass
 
 			employees.append(employee)
