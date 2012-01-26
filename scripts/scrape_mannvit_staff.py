@@ -1,6 +1,6 @@
 #!/usr/bin/python
-BASE_URL = "http://mannvit.is/"
-STAFF_URL = "%sMannvit/Starfsmenn/" % (BASE_URL,)
+BASE_URL = "http://mannvit.is"
+STAFF_URL = "%s/Mannvit/Starfsmenn/" % (BASE_URL,)
 FILENAME_TEMPLATE= 'mannvit'
 
 from lxml import etree
@@ -8,6 +8,7 @@ import urllib2, codecs, os, os.path, sqlite3, re, sys, tempfile, hashlib, json
 
 REX_FOREIGN = re.compile("(\(?\+\d+\)?)")
 REX_NON_NUMERIC= re.compile("([^\d]+)")
+REX_IMG = re.compile("url\('(.*)'\)")
 
 def page_to_tree(url,debug=False,basepath=None):
 	'''basepath and filename only required when debugging'''
@@ -99,7 +100,7 @@ def main():
 
 		c.execute("""CREATE TABLE "android_metadata" ("locale" TEXT DEFAULT 'en_US')""")
 		c.execute("""CREATE TABLE division(_id INTEGER PRIMARY KEY, name VARCHAR(256))""")
-		c.execute("""CREATE TABLE employee(_id INTEGER PRIMARY KEY, name VARCHAR(256), title VARCHAR(256), phone VARCHAR(64), mobile VARCHAR(64), email VARCHAR(256), workplace_id INTEGER, division_id INTEGER,FOREIGN KEY (workplace_id) REFERENCES workplace(_id), FOREIGN KEY (division_id) REFERENCES division(_id))""")
+		c.execute("""CREATE TABLE employee(_id INTEGER PRIMARY KEY, name VARCHAR(256), title VARCHAR(256), phone VARCHAR(64), mobile VARCHAR(64), email VARCHAR(256), image_url VARCHAR(1024), workplace_id INTEGER, division_id INTEGER,FOREIGN KEY (workplace_id) REFERENCES workplace(_id), FOREIGN KEY (division_id) REFERENCES division(_id))""")
 		c.execute("""CREATE INDEX nIndex ON employee(name)""")
 		c.execute("""CREATE TABLE workplace(_id INTEGER PRIMARY KEY, address VARCHAR(256))""")
 		c.execute("""CREATE VIEW employeeInfo AS SELECT e._id AS _id, e.name AS employee, e.title AS title, e.phone AS phone, e.mobile AS mobile, e.email AS email, w.address AS workplace, d.name AS division FROM employee e LEFT OUTER JOIN workplace w ON w._id = e.workplace_id LEFT OUTER JOIN division d ON d._id = e.division_id""")
@@ -107,7 +108,7 @@ def main():
 			c.execute("""INSERT INTO workplace (_id,address) VALUES (?,?)""", (workplace_id, workplace_name))
 
 		for employee in employee_data['employees']:
-			c.execute("""INSERT INTO employee(_id,name,title,phone,mobile,email,workplace_id,division_id) VALUES (?,?,?,?,?,?,?,?)""", (employee['id'],employee['name'],employee.get('title',''),employee.get('phone',''),employee.get('mobile',''),employee.get('email',''),employee.get('workplace',0),0))
+			c.execute("""INSERT INTO employee(_id,name,title,phone,mobile,email,workplace_id,division_id,image_url) VALUES (?,?,?,?,?,?,?,?,?)""", (employee['id'],employee['name'],employee.get('title',''),employee.get('phone',''),employee.get('mobile',''),employee.get('email',''),employee.get('workplace',0),0,employee.get('image_url','')))
 		c.execute('''INSERT INTO "android_metadata" VALUES('is_IS')''')
 		conn.commit()
 		c.execute('VACUUM')
@@ -197,6 +198,11 @@ def get_employees(debug,basepath):
 				else:
 					pass
 
+			div_style = employee_info.get('style')
+			if div_style:
+				img_matches = REX_IMG.findall(div_style)
+				if img_matches:
+					employee['image_url'] = '%s%s' % (BASE_URL,img_matches[0])
 			employees.append(employee)
 		else:
 			print "NOT 3 COLS!"
