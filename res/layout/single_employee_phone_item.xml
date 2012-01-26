@@ -29,7 +29,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
-    <com.gangverk.phonebook.utils.DontPressWithParentImgButton
+    <com.gangverk.mannvit.utils.DontPressWithParentImgButton
         android:id="@+id/btnCall"
         android:layout_width="50dip"
         android:layout_height="50dip"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     android:installLocation="auto"
-    package="com.gangverk.phonebook"
+    package="com.gangverk.mannvit"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -56,13 +56,13 @@
             android:name=".service.MannvitService"
             android:process=":mannvit_process" >
             <intent-filter>
-                <action android:name="com.gangverk.phonebook.service.MannvitService" />
+                <action android:name="com.gangverk.mannvit.service.MannvitService" />
             </intent-filter>
         </service>
 
         <provider
             android:name=".database.ContactsProvider"
-            android:authorities="com.gangverk.phonebook.Contacts" />
+            android:authorities="com.gangverk.mannvit.Contacts" />
     </application>
 
 </manifest>

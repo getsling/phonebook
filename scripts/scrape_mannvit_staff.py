@@ -2,9 +2,11 @@
 BASE_URL = "http://mannvit.is"
 STAFF_URL = "%s/Mannvit/Starfsmenn/" % (BASE_URL,)
 FILENAME_TEMPLATE= 'mannvit'
+MAX_WIDTH = 50
+MAX_HEIGHT= 100
 
 from lxml import etree
-import urllib2, codecs, os, os.path, sqlite3, re, sys, tempfile, hashlib, json
+import urllib2, codecs, os, os.path, sqlite3, re, sys, tempfile, hashlib, json, urllib, Image
 
 REX_FOREIGN = re.compile("(\(?\+\d+\)?)")
 REX_NON_NUMERIC= re.compile("([^\d]+)")
@@ -52,12 +54,13 @@ def parse_phone(number):
 	return '+%s %s' % (countrypart,localnum) if len(localnum) > 0 else ''
 
 def print_usage_exit():
-	sys.exit('Usage: ./%s --output=OUTPUT_PATH [--debug --htmlcachepath=DEBUG_BASEPATH]' % (os.path.basename(sys.argv[0]),))
+	sys.exit('Usage: ./%s --output=OUTPUT_PATH [--gen-thumbs=THUMB_PATH] [--debug --htmlcachepath=DEBUG_BASEPATH]' % (os.path.basename(sys.argv[0]),))
 
 def main():
 	basepath = None
 	debug = False
 	output_path = None
+	thumb_path = None
 	for arg in sys.argv[1:]:
 		value = None
 		argsplit = arg.split('=',1)
@@ -71,6 +74,8 @@ def main():
 			output_path = value
 		elif parname == '--htmlcachepath':
 			basepath = value
+		elif parname == '--gen-thumbs':
+			thumb_path = value
 		else:
 			print 'Unknown parameter specified: %s' % (parname,)
 			print_usage_exit()
@@ -80,6 +85,33 @@ def main():
 		print_usage_exit()
 
 	employee_data = get_employees(debug,basepath)
+
+	if thumb_path:
+		for e in filter(lambda x: 'image_url' in x and x['image_url'].find('.') > -1 and x['id'] == 84, employee_data['employees']):
+			print "Processing thumb: %d" % (e['id'],)
+			url = e['image_url']
+			tmpfile = '%s/%s.%s' % (tempfile.gettempdir(),hashlib.md5(url).hexdigest(),url.rsplit('.',1)[-1])
+			urllib.urlretrieve(url,tmpfile)
+			try:
+				im = Image.open(tmpfile)
+				(width, height) = im.size
+				ratio = float(width) / height
+				new_width,new_height = MAX_WIDTH,MAX_HEIGHT
+				if width > MAX_WIDTH:
+					width = MAX_WIDTH
+					height = width / ratio
+				# should be rare since height is set rather high
+				if height > MAX_HEIGHT:
+					height = MAX_HEIGHT
+					width = height * ratio
+					
+				im_out = im.resize((int(width),int(height)), Image.ANTIALIAS)
+
+				if not os.path.isdir(thumb_path):
+					os.makedirs(thumb_path)
+				im_out.save('%s/img_%d.jpg' % (thumb_path,e['id'],),quality=90)
+			except IOError:
+				print "No image found"
 
 	json_filename = '%s/%s.json' % (output_path, FILENAME_TEMPLATE)
 	old_json = None

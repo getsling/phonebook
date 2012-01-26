@@ -38,7 +38,7 @@
             android:layout_marginLeft="2dip">
         </TextView>
         </LinearLayout>
-        <com.gangverk.phonebook.utils.DontPressWithParentImgButton
+        <com.gangverk.mannvit.utils.DontPressWithParentImgButton
             android:layout_height="50dip"
             android:layout_width="50dip"
             android:scaleType="center" 

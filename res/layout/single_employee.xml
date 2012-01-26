@@ -12,7 +12,7 @@
         android:layout_weight="0"
         android:orientation="horizontal" >
 
-        <com.gangverk.phonebook.utils.RemoteImageView
+        <com.gangverk.mannvit.utils.RemoteImageView
             android:id="@+id/profilePic"
             android:layout_width="120dp"
             android:layout_height="fill_parent"
