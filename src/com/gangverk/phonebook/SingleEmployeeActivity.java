@@ -20,12 +20,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.gangverk.phonebook.database.ContactsProvider;
 import com.gangverk.phonebook.utils.ImageHelper;
+import com.gangverk.phonebook.utils.RemoteImageView;
 import com.gangverk.phonebook.utils.SingleEmployeeAdapter;
 import com.gangverk.phonebook.utils.SystemUtils;
 
@@ -41,7 +41,7 @@ public class SingleEmployeeActivity extends Activity {
 		Bundle extras = getIntent().getExtras();
 		userID = extras.getLong(ContactsProvider._ID); 
 		AssetManager assetManager = getAssets();
-		ImageView IV_profilePic = (ImageView)findViewById(R.id.profilePic);
+		RemoteImageView IV_profilePic = (RemoteImageView)findViewById(R.id.profilePic);
 		InputStream istr = null;
 		try {
 			istr = assetManager.open("profile/img_"+userID+".jpg");
@@ -66,6 +66,10 @@ public class SingleEmployeeActivity extends Activity {
 		String dbWorkplace = c.getString(c.getColumnIndexOrThrow(ContactsProvider.WORKPLACE));
 		String dbPhone = c.getString(c.getColumnIndexOrThrow(ContactsProvider.PHONE));
 		String dbGsm = c.getString(c.getColumnIndexOrThrow(ContactsProvider.MOBILE));
+		String dbImgUrl = "";//c.getString(c.getColumnIndexOrThrow(ContactsProvider.IMAGE_URL));
+		if(dbImgUrl.length() > 0) {
+			IV_profilePic.setImageFromUrl(dbImgUrl);
+		}
 
 		List<HashMap<String, String>> valueList = new ArrayList<HashMap<String, String>>();
 		String descriptiveDescription[] = {getString(R.string.email),getString(R.string.division),getString(R.string.workplace),getString(R.string.phone),getString(R.string.mobile)};

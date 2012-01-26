@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
 	private static final String LOG_TAG = "DatabaseHelper";
 	//The Android's default system path of your application database.
-	private static String DB_NAME = "mannvit_staff.sqlite";
+	public final static String DB_NAME = "employee_database.sqlite";
 	private static final int DB_VERSION = 1;
 	private static final boolean FORCE_RECOPY = false;
 
@@ -43,7 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		boolean hasDownloadedDb = settings.getBoolean(DownloadPhonebookAsyncTask.SETTINGS_KEY_HAS_NEW_DB, false);
         if(hasDownloadedDb) {
         	Log.d(LOG_TAG,"Starting processing downloaded db file");
-    		File srcFile = new File(String.format("%s/%s", context.getFilesDir(),DownloadPhonebookAsyncTask.DOWNLOADED_DB_FILENAME));
+    		File srcFile = new File(String.format("%s/%s", context.getFilesDir(),DB_NAME));
     		if(checkDBFileValidity(srcFile, tables, views, indexes))
     		{
     			try {
@@ -57,7 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         	settingsEditor.putBoolean(DownloadPhonebookAsyncTask.SETTINGS_KEY_HAS_NEW_DB, false);
         	settingsEditor.commit();
 			if(srcFile.isFile()) {
-				context.deleteFile(DownloadPhonebookAsyncTask.DOWNLOADED_DB_FILENAME);
+				context.deleteFile(DB_NAME);
 			}
         	Log.d(LOG_TAG,"Ended processing downloaded db file");
         } else if(FORCE_RECOPY || !dbFile.exists() || !checkDBFileValidity(dbFile,tables,views,indexes)) {
@@ -67,7 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 					
 	        try {
 	        	// copy file from raw resource to a file in app root
-	        	inputRaw = context.getResources().openRawResource(R.raw.mannvit_staff);
+	        	inputRaw = context.getResources().openRawResource(R.raw.shipped_db);
 	        	outputDbFile = new FileOutputStream(dbFile);
 	        	SystemUtils.copyInputStreamToOutputStream(inputRaw, outputDbFile);
 	        } catch (IOException ioe) {

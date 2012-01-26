@@ -34,6 +34,7 @@ public class ContactsProvider extends ContentProvider {
 	public static final String EMAIL = "email";
 	public static final String WORKPLACE = "workplace";
 	public static final String DIVISION = "division";
+	public static final String IMAGE_URL = "image_url";
 
 	private static final int CONTACTS = 1;
 	private static final int CONTACT_ID = 2;   

@@ -28,5 +28,6 @@
     <string name="pick_filter">Pick a filter</string>
     <string name="no_divisions">No division in database!</string>
     <string name="no_workplaces">Enginn skráður vinnustaður!</string>
+    <string name="db_url">http://phonebook.gangverk.is/db/mannvit.sqlite</string>
 
 </resources>
