@@ -26,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	//The Android's default system path of your application database.
 	public final static String DB_NAME = "employee_database.sqlite";
 	private static final int DB_VERSION = 1;
-	private static final boolean FORCE_RECOPY = false;
+	private static final boolean FORCE_RECOPY = true;
 
 	/**
 	 * Constructor
@@ -41,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		String[] indexes = new String[]{};
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 		boolean hasDownloadedDb = settings.getBoolean(DownloadPhonebookAsyncTask.SETTINGS_KEY_HAS_NEW_DB, false);
-        if(hasDownloadedDb) {
+        if(!FORCE_RECOPY && hasDownloadedDb) {
         	Log.d(LOG_TAG,"Starting processing downloaded db file");
     		File srcFile = new File(String.format("%s/%s", context.getFilesDir(),DB_NAME));
     		if(checkDBFileValidity(srcFile, tables, views, indexes))

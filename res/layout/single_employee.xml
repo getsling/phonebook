@@ -27,15 +27,19 @@
 
             <TextView
                 android:id="@+id/singleName"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <TextView
-                android:id="@+id/singleTitle"
-                android:layout_width="wrap_content"
+            <ScrollView
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:layout_width="fill_parent">
+                <TextView
+                    android:id="@+id/singleTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </ScrollView>
         </LinearLayout>
     </LinearLayout>
 

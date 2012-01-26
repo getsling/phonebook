@@ -104,20 +104,17 @@ public class PhonebookActivity extends Activity {
 
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					Uri allContacts = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts");
-					String selection = null;
-					String[] selectionArgs = null;
 					if(which == 0) {
-						final String workplaceAddress = "address";
-						final Cursor c = managedQuery(allContacts, new String[] {ContactsProvider._ID,workplaceAddress}, selection, selectionArgs, workplaceAddress +" COLLATE LOCALIZED ASC");
+						final String workplaceColumnName = "address";
+						final Cursor c = managedQuery(Uri.withAppendedPath(ContactsProvider.CONTENT_URI, "/workplaces"), null, null, null, String.format("%s COLLATE LOCALIZED ASC",workplaceColumnName));
 						if(c.getCount() != 0) {
 							subFilterDialog = new AlertDialog.Builder(PhonebookActivity.this) 
-							.setSingleChoiceItems(c, -1, workplaceAddress,new DialogInterface.OnClickListener() {
+							.setSingleChoiceItems(c, -1, workplaceColumnName,new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
 									int filterType = 1; // Workplace filter equals 1 
 									c.moveToPosition(which);
-									String pressedItem = c.getString(c.getColumnIndex(workplaceAddress));
+									String pressedItem = c.getString(c.getColumnIndex(workplaceColumnName));
 									Intent i = new Intent(PhonebookActivity.this, FilteredActivity.class);
 									i.putExtra("com.gangverk.phonebook.query", pressedItem);
 									i.putExtra("com.gangverk.phonebook.filter_type", filterType);
@@ -133,7 +130,7 @@ public class PhonebookActivity extends Activity {
 						}
 					} else if(which == 1) {
 						final String divisionName = "name";
-						final Cursor c = managedQuery(allContacts, new String[] {ContactsProvider._ID,divisionName}, selection, selectionArgs, divisionName +" COLLATE LOCALIZED ASC");
+						final Cursor c = managedQuery(Uri.withAppendedPath(ContactsProvider.CONTENT_URI, "/divisions"), null, null, null, divisionName +" COLLATE LOCALIZED ASC");
 						if(c.getCount() != 0) {
 							subFilterDialog = new AlertDialog.Builder(PhonebookActivity.this) 
 							.setSingleChoiceItems(c, -1, divisionName,new DialogInterface.OnClickListener() {
@@ -170,8 +167,7 @@ public class PhonebookActivity extends Activity {
 	public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-		Uri singleContact = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts/" + info.id);
-		Cursor c = managedQuery(singleContact, null, null, null, null);
+		Cursor c = managedQuery(Uri.withAppendedPath(ContactsProvider.CONTENT_URI, "/contacts/" + info.id), null, null, null, null);
 		c.moveToFirst();
 		menu.setHeaderTitle(c.getString(c.getColumnIndex(ContactsProvider.NAME)));
 		String[] menuItems = getResources().getStringArray(R.array.phonebook_context_menu);
@@ -187,8 +183,7 @@ public class PhonebookActivity extends Activity {
 		int menuItemIndex = item.getItemId();
 		String[] menuItems = getResources().getStringArray(R.array.phonebook_context_menu);
 		String menuItemName = menuItems[menuItemIndex];
-		Uri singleContact = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts/" + info.id);
-		Cursor c = managedQuery(singleContact, null, null, null, null);
+		Cursor c = managedQuery(Uri.withAppendedPath(ContactsProvider.CONTENT_URI, "/contacts/" + info.id), null, null, null, null);
 		c.moveToFirst();
 		String workPhone = c.getString(c.getColumnIndex(ContactsProvider.PHONE));
 		String mobile = c.getString(c.getColumnIndex(ContactsProvider.MOBILE));
@@ -321,7 +316,6 @@ public class PhonebookActivity extends Activity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		Uri allContacts = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts");
 		String selection = null;
 		String[] selectionArgs = null;
 		if(!TextUtils.isEmpty(query))	{
@@ -341,7 +335,7 @@ public class PhonebookActivity extends Activity {
 				break;
 			}
 		}
-		Cursor c = managedQuery(allContacts, null, selection, selectionArgs, null);
+		Cursor c = managedQuery(Uri.withAppendedPath(ContactsProvider.CONTENT_URI, "/contacts/"), null, selection, selectionArgs, null);
 		if(!c.moveToFirst()) {
 			return 0;
 		}
@@ -390,8 +384,7 @@ public class PhonebookActivity extends Activity {
 			long id = aAdapter.getItemId(position);
 			if (position != ListView.INVALID_POSITION) {
 				try {
-					Uri singleContact = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts/"+id);
-					Cursor c = managedQuery(singleContact, null, null, null, null);
+					Cursor c = managedQuery(Uri.withAppendedPath(ContactsProvider.CONTENT_URI, "/contacts/" + id), null, null, null, null);
 					c.moveToFirst();
 					String mobile = c.getString(c.getColumnIndex(ContactsProvider.MOBILE));
 					String workPhone = c.getString(c.getColumnIndex(ContactsProvider.PHONE));

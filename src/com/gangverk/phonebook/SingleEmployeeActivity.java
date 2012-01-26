@@ -24,7 +24,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.gangverk.phonebook.database.ContactsProvider;
-import com.gangverk.phonebook.utils.ImageHelper;
 import com.gangverk.phonebook.utils.RemoteImageView;
 import com.gangverk.phonebook.utils.SingleEmployeeAdapter;
 import com.gangverk.phonebook.utils.SystemUtils;
@@ -46,15 +45,13 @@ public class SingleEmployeeActivity extends Activity {
 		try {
 			istr = assetManager.open("profile/img_"+userID+".jpg");
 			Bitmap bitmap = BitmapFactory.decodeStream(istr);
-			bitmap = ImageHelper.getRoundedCornerBitmap(bitmap, 10);
 			IV_profilePic.setImageBitmap(bitmap);
 		} catch (IOException e) {
 			IV_profilePic.setImageResource(R.drawable.icon);
 			e.printStackTrace();
 		}
 
-		Uri singleContact = Uri.parse("content://com.gangverk.phonebook.Contacts/contacts/" + userID);
-		Cursor c = managedQuery(singleContact, null, null, null, null);
+		Cursor c = managedQuery(Uri.withAppendedPath(ContactsProvider.CONTENT_URI, "/contacts/" + userID), null, null, null, null);
 		c.moveToFirst();
 		TextView tv_name = (TextView)findViewById(R.id.singleName);
 		TextView tv_title = (TextView)findViewById(R.id.singleTitle);
@@ -66,7 +63,7 @@ public class SingleEmployeeActivity extends Activity {
 		String dbWorkplace = c.getString(c.getColumnIndexOrThrow(ContactsProvider.WORKPLACE));
 		String dbPhone = c.getString(c.getColumnIndexOrThrow(ContactsProvider.PHONE));
 		String dbGsm = c.getString(c.getColumnIndexOrThrow(ContactsProvider.MOBILE));
-		String dbImgUrl = "";//c.getString(c.getColumnIndexOrThrow(ContactsProvider.IMAGE_URL));
+		String dbImgUrl = c.getString(c.getColumnIndexOrThrow(ContactsProvider.IMAGE_URL));
 		if(dbImgUrl.length() > 0) {
 			IV_profilePic.setImageFromUrl(dbImgUrl);
 		}

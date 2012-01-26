@@ -103,7 +103,7 @@ def main():
 		c.execute("""CREATE TABLE employee(_id INTEGER PRIMARY KEY, name VARCHAR(256), title VARCHAR(256), phone VARCHAR(64), mobile VARCHAR(64), email VARCHAR(256), image_url VARCHAR(1024), workplace_id INTEGER, division_id INTEGER,FOREIGN KEY (workplace_id) REFERENCES workplace(_id), FOREIGN KEY (division_id) REFERENCES division(_id))""")
 		c.execute("""CREATE INDEX nIndex ON employee(name)""")
 		c.execute("""CREATE TABLE workplace(_id INTEGER PRIMARY KEY, address VARCHAR(256))""")
-		c.execute("""CREATE VIEW employeeInfo AS SELECT e._id AS _id, e.name AS employee, e.title AS title, e.phone AS phone, e.mobile AS mobile, e.email AS email, w.address AS workplace, d.name AS division FROM employee e LEFT OUTER JOIN workplace w ON w._id = e.workplace_id LEFT OUTER JOIN division d ON d._id = e.division_id""")
+		c.execute("""CREATE VIEW employeeInfo AS SELECT e._id AS _id, e.name AS employee, e.title AS title, e.phone AS phone, e.mobile AS mobile, e.email AS email, e.image_url AS image_url, w.address AS workplace, d.name AS division FROM employee e LEFT OUTER JOIN workplace w ON w._id = e.workplace_id LEFT OUTER JOIN division d ON d._id = e.division_id""")
 		for workplace_name, workplace_id in employee_data['workplaces'].iteritems():
 			c.execute("""INSERT INTO workplace (_id,address) VALUES (?,?)""", (workplace_id, workplace_name))
 
