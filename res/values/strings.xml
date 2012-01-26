@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Mannvit Símaskrá</string>
+    <string name="app_name">Mannvit</string>
     <string name="search_hint">Search in Phonebook</string>
     <string name="txtName">Name</string>
     <string name="txtTitle">Title</string>

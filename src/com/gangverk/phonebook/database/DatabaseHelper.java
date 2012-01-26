@@ -26,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	//The Android's default system path of your application database.
 	public final static String DB_NAME = "employee_database.sqlite";
 	private static final int DB_VERSION = 1;
-	private static final boolean FORCE_RECOPY = true;
+	private static final boolean FORCE_RECOPY = false;
 
 	/**
 	 * Constructor

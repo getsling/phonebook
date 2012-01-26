@@ -30,20 +30,6 @@ public class RemoteImageView extends ImageView implements ImageCache.ImageCallba
 		this.context = context;
 	}
 	
-	/*private void startSpinner() {
-		setImageDrawable(context.getResources().getDrawable(R.drawable.spinner));
-		// make spinner reasonably large - remember to remove padding below
-		int spinnerWidth = 20;
-		measure(10000,10000);
-		int imgWidth = getMeasuredWidth();
-		int imgHeight = getMeasuredHeight();
-		setScaleType(ScaleType.FIT_CENTER);
-		setPadding(imgWidth/2-spinnerWidth/2, imgHeight/2-spinnerWidth/2, imgWidth/2-spinnerWidth/2, imgHeight/2-spinnerWidth/2);
-		Animation spinnerRotation = AnimationUtils.loadAnimation(context,R.anim.clockwise_rotation);
-		spinnerRotation.setRepeatCount(Animation.INFINITE);
-		startAnimation(spinnerRotation);
-	}*/
-	
 	public void setImageFromUrl(String imgUrlString){
 		currentUrl = imgUrlString;
 		ImageCache ic = ImageCache.getInstance();
@@ -53,7 +39,9 @@ public class RemoteImageView extends ImageView implements ImageCache.ImageCallba
 	private void setResultingImage(Drawable result) {
 		clearAnimation();
 		setPadding(0,0,0,0);
-		setImageDrawable(result);
+		if(result != null) {
+			setImageDrawable(result);
+		}
 	}
 	
 
