@@ -226,7 +226,7 @@ def get_employees(debug,basepath):
 				elif itemtype.startswith('GSM'):
 					employee['mobile'] = parse_phone(itemvalue)
 				elif itemtype.startswith('Netfa'):
-					employee['email'] = itemvalue
+					employee['email'] = itemvalue.replace('mailto:','').strip()
 				else:
 					pass
 
