@@ -39,7 +39,7 @@ public class MyPhoneStateListener extends PhoneStateListener {
 			mToast.cancel();
 			break;
 		case TelephonyManager.CALL_STATE_RINGING:
-			if(!incomingNumber.equals("")){
+			if(incomingNumber != null && !incomingNumber.equals("")){
 				handleCall(incomingNumber);
 			}
 			break;
