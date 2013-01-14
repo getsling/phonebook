@@ -1,0 +1,14 @@
+<html>
+<body>
+	<object width='504' height='438' id='can' classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000'> <param name='movie' value='http://www.cbs.com/thunder/canplayer/canplayer.swf'></param> <param name='allowFullScreen' value='true'></param> <param name='allowScriptAccess' value='always'></param> <param name='bgcolor' value='666666'></param> <param name='FlashVars' value='pid=wvmjFmVqzHQugTppwX6giik4pId1k2mH&partner=last_fm&autoPlayVid=true&config=http://www.cbs.com/thunder/canplayer/config/skin_ad.xml'></param> <embed src='http://www.cbs.com/thunder/canplayer/canplayer.swf' bgcolor='666666' name='can' allowscriptaccess='always' allowfullscreen='true' flashvars='pid=wvmjFmVqzHQugTppwX6giik4pId1k2mH&partner=last_fm&autoPlayVid=true&config=http://www.cbs.com/thunder/canplayer/config/skin_ad.xml' type='application/x-shockwave-flash' pluginspage='http://www.macromedia.com/go/getflashplayer' height='438' width='504'> </object>
+{% if companies %}
+    <ul>
+    {% for company in companies %}
+        <li><a href="/companies/{{ company.id }}">{{ company.name }}</a> <a href="/companies/{{ company.id }}/employee_json">Employee JSON</a> <a href="/companies/{{ company.id }}/feed_json">Feed JSON</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No companies are available.</p>
+{% endif %}
+</body>
+</html>

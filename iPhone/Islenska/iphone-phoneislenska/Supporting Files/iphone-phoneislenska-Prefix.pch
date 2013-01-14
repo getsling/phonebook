@@ -1,0 +1,19 @@
+//
+// Prefix header for all source files of the 'iphone-phoneislenska' target in the 'iphone-phoneislenska' project
+//
+
+#import <Availability.h>
+
+#define MR_SHORTHAND
+#define MR_ENABLE_ACTIVE_RECORD_LOGGING 1
+
+#ifndef __IPHONE_3_0
+#warning "This project uses features only available in iOS SDK 3.0 and later."
+#endif
+
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+    #import <Foundation/Foundation.h>
+    #import <CoreData/CoreData.h>
+    #import "CoreData+MagicalRecord.h"
+#endif
