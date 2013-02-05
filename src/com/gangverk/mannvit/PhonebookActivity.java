@@ -418,7 +418,7 @@ public class PhonebookActivity extends Activity {
 			}
 		}
 	};
-	
+
 	public static boolean checkPhone(int id, Map<Integer,Integer> mapNumberPrefs, int compareToConst) {
 		boolean prefersPhone = false;
 		if(mapNumberPrefs != null) {

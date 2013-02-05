@@ -26,6 +26,10 @@ import android.widget.TextView;
 import com.gangverk.mannvit.PhonebookActivity;
 import com.gangverk.mannvit.R;
 import com.gangverk.mannvit.database.ContactsProvider;
+import com.gangverk.mannvit.imageprocessing.ImageCache;
+import com.gangverk.mannvit.imageprocessing.ImageCache.ImageCacheParams;
+import com.gangverk.mannvit.imageprocessing.ImageWorker;
+import com.gangverk.mannvit.imageprocessing.ProcessingUtils;
 
 public class AlphabetizedAdapter extends SimpleCursorAdapter implements SectionIndexer, Filterable{
 
@@ -33,6 +37,7 @@ public class AlphabetizedAdapter extends SimpleCursorAdapter implements SectionI
 	private static final int TYPE_NORMAL = 0;
 	private static final int TYPE_COUNT = 2;
 
+	private ImageWorker mImageWorker;
 	private View.OnClickListener callButtonListener = null;
 	private Map<Integer, Integer> mapNumberPrefs = null;
 	private AlphabetIndexer indexer;
@@ -44,6 +49,12 @@ public class AlphabetizedAdapter extends SimpleCursorAdapter implements SectionI
 
 	public AlphabetizedAdapter(Context context, int layout, Cursor c,String[] from, int[] to, int flags) {
 		super(context, layout, c, from, to, flags);
+		ImageCacheParams params = new ImageCacheParams("phonebook");
+		params.bitmapHeight = 100;
+		params.bitmapWidth = params.bitmapHeight;
+		params.memCacheSize = ProcessingUtils.getMemoryClass(context)/8;
+		com.gangverk.mannvit.imageprocessing.ImageCache cache = new ImageCache(context, params);
+		mImageWorker = new ImageWorker(context, cache, R.drawable.icon, true);
 		this.context = context;
 		mLayoutInflater = LayoutInflater.from(context);
 		indexer = new AlphabetIndexer(c, c.getColumnIndexOrThrow(ContactsProvider.NAME), "ABCDEFGHIJKLMNOPQRSTUVWXYZÞÆÖ ");
@@ -189,17 +200,17 @@ public class AlphabetizedAdapter extends SimpleCursorAdapter implements SectionI
 		String phone = cursor.getString(cursor.getColumnIndex(ContactsProvider.PHONE));
 		TextView tv_smallText = (TextView)view.findViewById(R.id.textSmall1);
 
-		AssetManager assetManager = context.getAssets();
-		InputStream istr = null;
+		//AssetManager assetManager = context.getAssets();
+		//InputStream istr = null;
 		ImageView iv_smallProfilePic = (ImageView)view.findViewById(R.id.smallProfilePic);
-
-		try {
+		mImageWorker.loadImage(cursor.getString(cursor.getColumnIndex(ContactsProvider.IMAGE_URL)), iv_smallProfilePic);
+		/*try {
 			istr = assetManager.open("profile/img_"+id+".jpg");
 			Bitmap bitmap = BitmapFactory.decodeStream(istr);
 			iv_smallProfilePic.setImageBitmap(bitmap);
 		} catch (IOException e) {
 			iv_smallProfilePic.setImageResource(R.drawable.icon);
-		}
+		}*/
 
 		int checkText = tv_smallText.getText().length();
 		boolean prefersPhone = false;

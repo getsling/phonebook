@@ -1,6 +1,6 @@
 #!/usr/bin/python
 BASE_URL = "http://mannvit.is"
-STAFF_URL = "%s/Mannvit/Starfsmenn/" % (BASE_URL,)
+STAFF_URL = "%s/Mannvit/Starfsmenn/AllirStarfsmenn" % (BASE_URL,)
 FILENAME_TEMPLATE= 'mannvit'
 MAX_WIDTH = 50
 MAX_HEIGHT= 100
@@ -87,7 +87,7 @@ def main():
 	employee_data = get_employees(debug,basepath)
 
 	if thumb_path:
-		for e in filter(lambda x: 'image_url' in x and x['image_url'].find('.') > -1 and x['id'] == 84, employee_data['employees']):
+		for e in filter(lambda x: 'image_url' in x and x['image_url'].find('.') > -1, employee_data['employees']):
 			print "Processing thumb: %d" % (e['id'],)
 			url = e['image_url']
 			tmpfile = '%s/%s.%s' % (tempfile.gettempdir(),hashlib.md5(url).hexdigest(),url.rsplit('.',1)[-1])
