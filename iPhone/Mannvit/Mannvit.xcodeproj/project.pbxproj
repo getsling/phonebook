@@ -1,0 +1,575 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0A05231414DC4DE500C11C0B /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A05231314DC4DE500C11C0B /* Icon.png */; };
+		0A05231614DC4DEC00C11C0B /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A05231514DC4DEC00C11C0B /* Icon@2x.png */; };
+		0A05231814DC4DF300C11C0B /* Icon-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A05231714DC4DF300C11C0B /* Icon-iPad.png */; };
+		0AA0338F14DC3F94008FC943 /* Default-Landscape~iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AA0338B14DC3F94008FC943 /* Default-Landscape~iPad.png */; };
+		0AA0339014DC3F94008FC943 /* Default-Portrait~iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AA0338C14DC3F94008FC943 /* Default-Portrait~iPad.png */; };
+		0AA0339114DC3F94008FC943 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AA0338D14DC3F94008FC943 /* Default.png */; };
+		0AA0339214DC3F94008FC943 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AA0338E14DC3F94008FC943 /* Default@2x.png */; };
+		0AA0339414DC4105008FC943 /* iTunes.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AA0339314DC4105008FC943 /* iTunes.png */; };
+		20D477E414D2C68200B703C7 /* shipped_db.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 20D477E314D2C68200B703C7 /* shipped_db.sqlite */; };
+		C5388FCE159C9DE900A616DA /* DetailViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = C5388FCA159C9DE900A616DA /* DetailViewController_iPhone.xib */; };
+		C5388FD0159C9DE900A616DA /* MasterViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = C5388FCC159C9DE900A616DA /* MasterViewController_iPhone.xib */; };
+		C5388FF3159CB6F500A616DA /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = C5388FF2159CB6F500A616DA /* Constants.m */; };
+		C538900A159DB8EC00A616DA /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = C5389005159DB8E300A616DA /* UIImage+Alpha.m */; };
+		C538900B159DB8EC00A616DA /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = C5389007159DB8E300A616DA /* UIImage+Resize.m */; };
+		C538900C159DB8EC00A616DA /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = C5389009159DB8E300A616DA /* UIImage+RoundedCorner.m */; };
+		C538900E159DC7B100A616DA /* tableHeader.png in Resources */ = {isa = PBXBuildFile; fileRef = C538900D159DC7B100A616DA /* tableHeader.png */; };
+		C5389010159DC91100A616DA /* tableHeader@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C538900F159DC91100A616DA /* tableHeader@2x.png */; };
+		C5389013159DCC3400A616DA /* bg_nav.png in Resources */ = {isa = PBXBuildFile; fileRef = C5389011159DCC3400A616DA /* bg_nav.png */; };
+		C5389014159DCC3400A616DA /* bg_nav@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C5389012159DCC3400A616DA /* bg_nav@2x.png */; };
+		C538906715A1B99D00A616DA /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C538906515A1B99C00A616DA /* MainViewController.m */; };
+		C538906815A1B99D00A616DA /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C538906615A1B99C00A616DA /* MainViewController.xib */; };
+		C538906C15A1BC7400A616DA /* news.png in Resources */ = {isa = PBXBuildFile; fileRef = C538906A15A1BC7400A616DA /* news.png */; };
+		C538906D15A1BC7400A616DA /* news@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C538906B15A1BC7400A616DA /* news@2x.png */; };
+		C55B5E7715A1E2E000CB14E1 /* WebBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C55B5E7615A1E2E000CB14E1 /* WebBrowserViewController.m */; };
+		C55B5E7A15A1E34800CB14E1 /* WebBrowserViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C55B5E7915A1E34800CB14E1 /* WebBrowserViewController.xib */; };
+		C55B5E7F15A1E3A000CB14E1 /* arrowback.png in Resources */ = {isa = PBXBuildFile; fileRef = C55B5E7B15A1E3A000CB14E1 /* arrowback.png */; };
+		C55B5E8015A1E3A000CB14E1 /* arrowback@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C55B5E7C15A1E3A000CB14E1 /* arrowback@2x.png */; };
+		C55B5E8115A1E3A000CB14E1 /* arrowforward.png in Resources */ = {isa = PBXBuildFile; fileRef = C55B5E7D15A1E3A000CB14E1 /* arrowforward.png */; };
+		C55B5E8215A1E3A000CB14E1 /* arrowforward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C55B5E7E15A1E3A000CB14E1 /* arrowforward@2x.png */; };
+		C565A79714C97E6100B75528 /* InfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C565A79614C97E6100B75528 /* InfoCell.xib */; };
+		C565A79B14C9CE0000B75528 /* NSDictionary-MutableDeepCopy.m in Sources */ = {isa = PBXBuildFile; fileRef = C565A79A14C9CE0000B75528 /* NSDictionary-MutableDeepCopy.m */; };
+		C56C000014C5D6FD0057D499 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C56CFFFF14C5D6FD0057D499 /* Foundation.framework */; };
+		C56C000214C5D6FD0057D499 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C56C000114C5D6FD0057D499 /* CoreGraphics.framework */; };
+		C56C000814C5D6FD0057D499 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C56C000614C5D6FD0057D499 /* InfoPlist.strings */; };
+		C56C000A14C5D6FD0057D499 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C56C000914C5D6FD0057D499 /* main.m */; };
+		C56C000E14C5D6FD0057D499 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C56C000D14C5D6FD0057D499 /* AppDelegate.m */; };
+		C56C001114C5D6FD0057D499 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C56C001014C5D6FD0057D499 /* MasterViewController.m */; };
+		C56C001414C5D6FD0057D499 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C56C001314C5D6FD0057D499 /* DetailViewController.m */; };
+		C56C006914C6C4160057D499 /* Phonebook.m in Sources */ = {isa = PBXBuildFile; fileRef = C56C006814C6C4160057D499 /* Phonebook.m */; };
+		C56C007414C6D21A0057D499 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C56C007314C6D21A0057D499 /* libsqlite3.0.dylib */; };
+		C56C064514C852610057D499 /* MainCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C56C064414C852610057D499 /* MainCell.xib */; };
+		C56CFFFE14C5D6FD0057D499 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C56CFFFD14C5D6FD0057D499 /* UIKit.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0A05231314DC4DE500C11C0B /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		0A05231514DC4DEC00C11C0B /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		0A05231714DC4DF300C11C0B /* Icon-iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad.png"; sourceTree = "<group>"; };
+		0AA0338B14DC3F94008FC943 /* Default-Landscape~iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~iPad.png"; sourceTree = "<group>"; };
+		0AA0338C14DC3F94008FC943 /* Default-Portrait~iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~iPad.png"; sourceTree = "<group>"; };
+		0AA0338D14DC3F94008FC943 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		0AA0338E14DC3F94008FC943 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		0AA0339314DC4105008FC943 /* iTunes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iTunes.png; sourceTree = "<group>"; };
+		20D477E314D2C68200B703C7 /* shipped_db.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = shipped_db.sqlite; sourceTree = "<group>"; };
+		C5388FCA159C9DE900A616DA /* DetailViewController_iPhone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailViewController_iPhone.xib; sourceTree = "<group>"; };
+		C5388FCC159C9DE900A616DA /* MasterViewController_iPhone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MasterViewController_iPhone.xib; sourceTree = "<group>"; };
+		C5388FF1159CB6F500A616DA /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		C5388FF2159CB6F500A616DA /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		C5389004159DB8E300A616DA /* UIImage+Alpha.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "UIImage+Alpha.h"; path = "Phonebook/Classes/Third Party/Image Processing/UIImage+Alpha.h"; sourceTree = SOURCE_ROOT; };
+		C5389005159DB8E300A616DA /* UIImage+Alpha.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Alpha.m"; path = "Phonebook/Classes/Third Party/Image Processing/UIImage+Alpha.m"; sourceTree = SOURCE_ROOT; };
+		C5389006159DB8E300A616DA /* UIImage+Resize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "UIImage+Resize.h"; path = "Phonebook/Classes/Third Party/Image Processing/UIImage+Resize.h"; sourceTree = SOURCE_ROOT; };
+		C5389007159DB8E300A616DA /* UIImage+Resize.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Resize.m"; path = "Phonebook/Classes/Third Party/Image Processing/UIImage+Resize.m"; sourceTree = SOURCE_ROOT; };
+		C5389008159DB8E300A616DA /* UIImage+RoundedCorner.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "UIImage+RoundedCorner.h"; path = "Phonebook/Classes/Third Party/Image Processing/UIImage+RoundedCorner.h"; sourceTree = SOURCE_ROOT; };
+		C5389009159DB8E300A616DA /* UIImage+RoundedCorner.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "UIImage+RoundedCorner.m"; path = "Phonebook/Classes/Third Party/Image Processing/UIImage+RoundedCorner.m"; sourceTree = SOURCE_ROOT; };
+		C538900D159DC7B100A616DA /* tableHeader.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tableHeader.png; sourceTree = "<group>"; };
+		C538900F159DC91100A616DA /* tableHeader@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tableHeader@2x.png"; sourceTree = "<group>"; };
+		C5389011159DCC3400A616DA /* bg_nav.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bg_nav.png; sourceTree = "<group>"; };
+		C5389012159DCC3400A616DA /* bg_nav@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_nav@2x.png"; sourceTree = "<group>"; };
+		C538906415A1B99C00A616DA /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		C538906515A1B99C00A616DA /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		C538906615A1B99C00A616DA /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
+		C538906A15A1BC7400A616DA /* news.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = news.png; sourceTree = "<group>"; };
+		C538906B15A1BC7400A616DA /* news@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "news@2x.png"; sourceTree = "<group>"; };
+		C55B5E7515A1E2E000CB14E1 /* WebBrowserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebBrowserViewController.h; sourceTree = "<group>"; };
+		C55B5E7615A1E2E000CB14E1 /* WebBrowserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebBrowserViewController.m; sourceTree = "<group>"; };
+		C55B5E7915A1E34800CB14E1 /* WebBrowserViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WebBrowserViewController.xib; sourceTree = "<group>"; };
+		C55B5E7B15A1E3A000CB14E1 /* arrowback.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrowback.png; sourceTree = "<group>"; };
+		C55B5E7C15A1E3A000CB14E1 /* arrowback@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrowback@2x.png"; sourceTree = "<group>"; };
+		C55B5E7D15A1E3A000CB14E1 /* arrowforward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrowforward.png; sourceTree = "<group>"; };
+		C55B5E7E15A1E3A000CB14E1 /* arrowforward@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrowforward@2x.png"; sourceTree = "<group>"; };
+		C565A79614C97E6100B75528 /* InfoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoCell.xib; sourceTree = "<group>"; };
+		C565A79914C9CDE800B75528 /* NSDictionary-MutableDeepCopy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary-MutableDeepCopy.h"; sourceTree = "<group>"; };
+		C565A79A14C9CE0000B75528 /* NSDictionary-MutableDeepCopy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary-MutableDeepCopy.m"; sourceTree = "<group>"; };
+		C56C000114C5D6FD0057D499 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		C56C000514C5D6FD0057D499 /* Mannvit-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Mannvit-Info.plist"; sourceTree = "<group>"; };
+		C56C000714C5D6FD0057D499 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C56C000914C5D6FD0057D499 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		C56C000B14C5D6FD0057D499 /* Mannvit-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Mannvit-Prefix.pch"; sourceTree = "<group>"; };
+		C56C000C14C5D6FD0057D499 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		C56C000D14C5D6FD0057D499 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		C56C000F14C5D6FD0057D499 /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
+		C56C001014C5D6FD0057D499 /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
+		C56C001214C5D6FD0057D499 /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
+		C56C001314C5D6FD0057D499 /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		C56C006714C6C4160057D499 /* Phonebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Phonebook.h; sourceTree = "<group>"; };
+		C56C006814C6C4160057D499 /* Phonebook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Phonebook.m; sourceTree = "<group>"; };
+		C56C007314C6D21A0057D499 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
+		C56C064414C852610057D499 /* MainCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainCell.xib; sourceTree = "<group>"; };
+		C56CFFF914C5D6FD0057D499 /* Mannvit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mannvit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C56CFFFD14C5D6FD0057D499 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		C56CFFFF14C5D6FD0057D499 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		C5C4C1B614CD949500E2B686 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		C5C4C1B814CD949C00E2B686 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		C5C4C1BA14CD94A800E2B686 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		C5C4C1BC14CD94B500E2B686 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C56CFFF614C5D6FD0057D499 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C56CFFFE14C5D6FD0057D499 /* UIKit.framework in Frameworks */,
+				C56C000014C5D6FD0057D499 /* Foundation.framework in Frameworks */,
+				C56C000214C5D6FD0057D499 /* CoreGraphics.framework in Frameworks */,
+				C56C007414C6D21A0057D499 /* libsqlite3.0.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C5388FC6159C999300A616DA /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				C538906915A1B9A500A616DA /* View Controllers */,
+				C5388FF9159DB27B00A616DA /* Third Party */,
+				C56C000C14C5D6FD0057D499 /* AppDelegate.h */,
+				C56C000D14C5D6FD0057D499 /* AppDelegate.m */,
+				C56C006714C6C4160057D499 /* Phonebook.h */,
+				C56C006814C6C4160057D499 /* Phonebook.m */,
+				C565A79914C9CDE800B75528 /* NSDictionary-MutableDeepCopy.h */,
+				C565A79A14C9CE0000B75528 /* NSDictionary-MutableDeepCopy.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		C5388FC7159C9C6B00A616DA /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				C55B5E7B15A1E3A000CB14E1 /* arrowback.png */,
+				C55B5E7C15A1E3A000CB14E1 /* arrowback@2x.png */,
+				C55B5E7D15A1E3A000CB14E1 /* arrowforward.png */,
+				C55B5E7E15A1E3A000CB14E1 /* arrowforward@2x.png */,
+				C538906A15A1BC7400A616DA /* news.png */,
+				C538906B15A1BC7400A616DA /* news@2x.png */,
+				C5389011159DCC3400A616DA /* bg_nav.png */,
+				C5389012159DCC3400A616DA /* bg_nav@2x.png */,
+				C538900D159DC7B100A616DA /* tableHeader.png */,
+				C538900F159DC91100A616DA /* tableHeader@2x.png */,
+				0A05231714DC4DF300C11C0B /* Icon-iPad.png */,
+				0A05231514DC4DEC00C11C0B /* Icon@2x.png */,
+				0A05231314DC4DE500C11C0B /* Icon.png */,
+				0AA0338B14DC3F94008FC943 /* Default-Landscape~iPad.png */,
+				0AA0338C14DC3F94008FC943 /* Default-Portrait~iPad.png */,
+				0AA0338D14DC3F94008FC943 /* Default.png */,
+				0AA0338E14DC3F94008FC943 /* Default@2x.png */,
+				0AA0339314DC4105008FC943 /* iTunes.png */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		C5388FC8159C9C9700A616DA /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				C56C064414C852610057D499 /* MainCell.xib */,
+				C565A79614C97E6100B75528 /* InfoCell.xib */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		C5388FF9159DB27B00A616DA /* Third Party */ = {
+			isa = PBXGroup;
+			children = (
+				C5388FFA159DB28500A616DA /* Image Processing */,
+			);
+			path = "Third Party";
+			sourceTree = "<group>";
+		};
+		C5388FFA159DB28500A616DA /* Image Processing */ = {
+			isa = PBXGroup;
+			children = (
+				C5389004159DB8E300A616DA /* UIImage+Alpha.h */,
+				C5389005159DB8E300A616DA /* UIImage+Alpha.m */,
+				C5389006159DB8E300A616DA /* UIImage+Resize.h */,
+				C5389007159DB8E300A616DA /* UIImage+Resize.m */,
+				C5389008159DB8E300A616DA /* UIImage+RoundedCorner.h */,
+				C5389009159DB8E300A616DA /* UIImage+RoundedCorner.m */,
+			);
+			name = "Image Processing";
+			path = "Third Party/Image Processing";
+			sourceTree = "<group>";
+		};
+		C538906915A1B9A500A616DA /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				C538906415A1B99C00A616DA /* MainViewController.h */,
+				C538906515A1B99C00A616DA /* MainViewController.m */,
+				C56C000F14C5D6FD0057D499 /* MasterViewController.h */,
+				C56C001014C5D6FD0057D499 /* MasterViewController.m */,
+				C56C001214C5D6FD0057D499 /* DetailViewController.h */,
+				C56C001314C5D6FD0057D499 /* DetailViewController.m */,
+				C55B5E7515A1E2E000CB14E1 /* WebBrowserViewController.h */,
+				C55B5E7615A1E2E000CB14E1 /* WebBrowserViewController.m */,
+			);
+			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		C56C000314C5D6FD0057D499 /* Phonebook */ = {
+			isa = PBXGroup;
+			children = (
+				C5388FC6159C999300A616DA /* Classes */,
+				C56C002814C5D8580057D499 /* Resources */,
+				C56C000414C5D6FD0057D499 /* Supporting Files */,
+			);
+			path = Phonebook;
+			sourceTree = "<group>";
+		};
+		C56C000414C5D6FD0057D499 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C56C000514C5D6FD0057D499 /* Mannvit-Info.plist */,
+				C56C000614C5D6FD0057D499 /* InfoPlist.strings */,
+				C56C000914C5D6FD0057D499 /* main.m */,
+				C56C000B14C5D6FD0057D499 /* Mannvit-Prefix.pch */,
+				C5388FF1159CB6F500A616DA /* Constants.h */,
+				C5388FF2159CB6F500A616DA /* Constants.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C56C002614C5D7F20057D499 /* Nibs */ = {
+			isa = PBXGroup;
+			children = (
+				C5388FC8159C9C9700A616DA /* Cells */,
+				C538906615A1B99C00A616DA /* MainViewController.xib */,
+				C5388FCA159C9DE900A616DA /* DetailViewController_iPhone.xib */,
+				C5388FCC159C9DE900A616DA /* MasterViewController_iPhone.xib */,
+				C55B5E7915A1E34800CB14E1 /* WebBrowserViewController.xib */,
+			);
+			path = Nibs;
+			sourceTree = "<group>";
+		};
+		C56C002814C5D8580057D499 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C56C002614C5D7F20057D499 /* Nibs */,
+				C5388FC7159C9C6B00A616DA /* Images */,
+				20D477E314D2C68200B703C7 /* shipped_db.sqlite */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C56CFFEE14C5D6FC0057D499 = {
+			isa = PBXGroup;
+			children = (
+				C56C000314C5D6FD0057D499 /* Phonebook */,
+				C56CFFFC14C5D6FD0057D499 /* Frameworks */,
+				C56CFFFA14C5D6FD0057D499 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C56CFFFA14C5D6FD0057D499 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C56CFFF914C5D6FD0057D499 /* Mannvit.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C56CFFFC14C5D6FD0057D499 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C5C4C1BC14CD94B500E2B686 /* libz.dylib */,
+				C5C4C1BA14CD94A800E2B686 /* MobileCoreServices.framework */,
+				C5C4C1B814CD949C00E2B686 /* SystemConfiguration.framework */,
+				C5C4C1B614CD949500E2B686 /* CFNetwork.framework */,
+				C56C007314C6D21A0057D499 /* libsqlite3.0.dylib */,
+				C56CFFFD14C5D6FD0057D499 /* UIKit.framework */,
+				C56CFFFF14C5D6FD0057D499 /* Foundation.framework */,
+				C56C000114C5D6FD0057D499 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C56CFFF814C5D6FD0057D499 /* Mannvit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C56C002314C5D6FD0057D499 /* Build configuration list for PBXNativeTarget "Mannvit" */;
+			buildPhases = (
+				C56CFFF514C5D6FD0057D499 /* Sources */,
+				C56CFFF614C5D6FD0057D499 /* Frameworks */,
+				C56CFFF714C5D6FD0057D499 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Mannvit;
+			productName = Phonebook;
+			productReference = C56CFFF914C5D6FD0057D499 /* Mannvit.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C56CFFF014C5D6FD0057D499 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0430;
+				ORGANIZATIONNAME = Gangverk;
+			};
+			buildConfigurationList = C56CFFF314C5D6FD0057D499 /* Build configuration list for PBXProject "Mannvit" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = C56CFFEE14C5D6FC0057D499;
+			productRefGroup = C56CFFFA14C5D6FD0057D499 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C56CFFF814C5D6FD0057D499 /* Mannvit */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C56CFFF714C5D6FD0057D499 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C56C000814C5D6FD0057D499 /* InfoPlist.strings in Resources */,
+				C56C064514C852610057D499 /* MainCell.xib in Resources */,
+				C565A79714C97E6100B75528 /* InfoCell.xib in Resources */,
+				20D477E414D2C68200B703C7 /* shipped_db.sqlite in Resources */,
+				0AA0338F14DC3F94008FC943 /* Default-Landscape~iPad.png in Resources */,
+				0AA0339014DC3F94008FC943 /* Default-Portrait~iPad.png in Resources */,
+				0AA0339114DC3F94008FC943 /* Default.png in Resources */,
+				0AA0339214DC3F94008FC943 /* Default@2x.png in Resources */,
+				0AA0339414DC4105008FC943 /* iTunes.png in Resources */,
+				0A05231414DC4DE500C11C0B /* Icon.png in Resources */,
+				0A05231614DC4DEC00C11C0B /* Icon@2x.png in Resources */,
+				0A05231814DC4DF300C11C0B /* Icon-iPad.png in Resources */,
+				C5388FCE159C9DE900A616DA /* DetailViewController_iPhone.xib in Resources */,
+				C5388FD0159C9DE900A616DA /* MasterViewController_iPhone.xib in Resources */,
+				C538900E159DC7B100A616DA /* tableHeader.png in Resources */,
+				C5389010159DC91100A616DA /* tableHeader@2x.png in Resources */,
+				C5389013159DCC3400A616DA /* bg_nav.png in Resources */,
+				C5389014159DCC3400A616DA /* bg_nav@2x.png in Resources */,
+				C538906815A1B99D00A616DA /* MainViewController.xib in Resources */,
+				C538906C15A1BC7400A616DA /* news.png in Resources */,
+				C538906D15A1BC7400A616DA /* news@2x.png in Resources */,
+				C55B5E7A15A1E34800CB14E1 /* WebBrowserViewController.xib in Resources */,
+				C55B5E7F15A1E3A000CB14E1 /* arrowback.png in Resources */,
+				C55B5E8015A1E3A000CB14E1 /* arrowback@2x.png in Resources */,
+				C55B5E8115A1E3A000CB14E1 /* arrowforward.png in Resources */,
+				C55B5E8215A1E3A000CB14E1 /* arrowforward@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C56CFFF514C5D6FD0057D499 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C538900A159DB8EC00A616DA /* UIImage+Alpha.m in Sources */,
+				C538900B159DB8EC00A616DA /* UIImage+Resize.m in Sources */,
+				C538900C159DB8EC00A616DA /* UIImage+RoundedCorner.m in Sources */,
+				C56C000A14C5D6FD0057D499 /* main.m in Sources */,
+				C56C000E14C5D6FD0057D499 /* AppDelegate.m in Sources */,
+				C56C001114C5D6FD0057D499 /* MasterViewController.m in Sources */,
+				C56C001414C5D6FD0057D499 /* DetailViewController.m in Sources */,
+				C56C006914C6C4160057D499 /* Phonebook.m in Sources */,
+				C565A79B14C9CE0000B75528 /* NSDictionary-MutableDeepCopy.m in Sources */,
+				C5388FF3159CB6F500A616DA /* Constants.m in Sources */,
+				C538906715A1B99D00A616DA /* MainViewController.m in Sources */,
+				C55B5E7715A1E2E000CB14E1 /* WebBrowserViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		C56C000614C5D6FD0057D499 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C56C000714C5D6FD0057D499 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		20E7DB7C14D29D0900DC819F /* Ad-Hoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Gangverk ehf.";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PRODUCT_NAME = Mannvit;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6C903391-7DAC-4584-9150-8BD5B8615CC7";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "Ad-Hoc";
+		};
+		20E7DB7D14D29D0900DC819F /* Ad-Hoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					armv6,
+					armv7,
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Phonebook/Mannvit-Prefix.pch";
+				INFOPLIST_FILE = "Phonebook/Mannvit-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
+				PRODUCT_NAME = Mannvit;
+				WRAPPER_EXTENSION = app;
+			};
+			name = "Ad-Hoc";
+		};
+		C56C002114C5D6FD0057D499 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Gardar Hauksson (RTVUWU55K9)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PRODUCT_NAME = Mannvit;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4BE5B3BC-4F14-4985-89A6-AFDFD29E8742";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C56C002214C5D6FD0057D499 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Gardar Hauksson (RTVUWU55K9)";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PRODUCT_NAME = Mannvit;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4BE5B3BC-4F14-4985-89A6-AFDFD29E8742";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C56C002414C5D6FD0057D499 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Phonebook/Mannvit-Prefix.pch";
+				INFOPLIST_FILE = "Phonebook/Mannvit-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
+				PRODUCT_NAME = Mannvit;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		C56C002514C5D6FD0057D499 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					armv6,
+					armv7,
+				);
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Phonebook/Mannvit-Prefix.pch";
+				INFOPLIST_FILE = "Phonebook/Mannvit-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
+				PRODUCT_NAME = Mannvit;
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C56C002314C5D6FD0057D499 /* Build configuration list for PBXNativeTarget "Mannvit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C56C002414C5D6FD0057D499 /* Debug */,
+				C56C002514C5D6FD0057D499 /* Release */,
+				20E7DB7D14D29D0900DC819F /* Ad-Hoc */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C56CFFF314C5D6FD0057D499 /* Build configuration list for PBXProject "Mannvit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C56C002114C5D6FD0057D499 /* Debug */,
+				C56C002214C5D6FD0057D499 /* Release */,
+				20E7DB7C14D29D0900DC819F /* Ad-Hoc */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C56CFFF014C5D6FD0057D499 /* Project object */;
+}

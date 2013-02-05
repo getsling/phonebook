@@ -1,0 +1,8 @@
+<h1>{{ company.name }}</h1>
+<ul>
+{% for employee in company.employee_set.all %}
+    <li><a href="http://127.0.0.1:8000/media/{{ employee.image }}">{{ employee.name }}</a></li>
+{% endfor %}
+</ul>
+
+{{data}}
