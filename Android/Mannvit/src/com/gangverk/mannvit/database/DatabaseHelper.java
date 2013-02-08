@@ -25,9 +25,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	private static final String LOG_TAG = "DatabaseHelper";
 	//The Android's default system path of your application database.
 	public final static String DB_NAME = "employee_database.sqlite";
-	private static final int DB_VERSION = 1;
+	private static final int DB_VERSION = 3;
 	private static final boolean FORCE_RECOPY = false;
-
+	private Context mContext;
 	/**
 	 * Constructor
 	 * Takes and keeps a reference of the passed context in order to access to the application assets and resources.
@@ -35,6 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	 */
 	public DatabaseHelper(Context context) {
 		super(context, DB_NAME, null, DB_VERSION);
+		mContext = context;
 		File dbFile = context.getDatabasePath(DB_NAME);
 		String[] tables = new String[]{"employee","division","workplace"};
 		String[] views = new String[]{"employeeInfo"};
@@ -61,23 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 			}
         	Log.d(LOG_TAG,"Ended processing downloaded db file");
         } else if(FORCE_RECOPY || !dbFile.exists() || !checkDBFileValidity(dbFile,tables,views,indexes)) {
-			dbFile.getParentFile().mkdirs();
-			InputStream inputRaw = null;
-			OutputStream outputDbFile = null;
-					
-	        try {
-	        	// copy file from raw resource to a file in app root
-	        	inputRaw = context.getResources().openRawResource(R.raw.shipped_db);
-	        	outputDbFile = new FileOutputStream(dbFile);
-	        	SystemUtils.copyInputStreamToOutputStream(inputRaw, outputDbFile);
-	        } catch (IOException ioe) {
-	        	Log.e(LOG_TAG,"Could not find or read sqlite db");
-	        	ioe.printStackTrace();
-	        } finally {
-	        	if(inputRaw != null) {try{inputRaw.close();}catch(IOException ioe){}}
-	        	if(outputDbFile != null) {try{outputDbFile.close();}catch(IOException ioe){}}
-	        }
-	        
+			copyDbToDbFolder();
 		}
 	}	
 
@@ -85,9 +70,32 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	public void onCreate(SQLiteDatabase db) {
 	}
 
+	private void copyDbToDbFolder() {
+		File dbFile = mContext.getDatabasePath(DB_NAME);
+		dbFile.getParentFile().mkdirs();
+		InputStream inputRaw = null;
+		OutputStream outputDbFile = null;
+				
+        try {
+        	// copy file from raw resource to a file in app root
+        	inputRaw = mContext.getResources().openRawResource(R.raw.shipped_db);
+        	outputDbFile = new FileOutputStream(dbFile);
+        	SystemUtils.copyInputStreamToOutputStream(inputRaw, outputDbFile);
+        } catch (IOException ioe) {
+        	Log.e(LOG_TAG,"Could not find or read sqlite db");
+        	ioe.printStackTrace();
+        } finally {
+        	if(inputRaw != null) {try{inputRaw.close();}catch(IOException ioe){}}
+        	if(outputDbFile != null) {try{outputDbFile.close();}catch(IOException ioe){}}
+        }
+	}
+	
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		throw new RuntimeException("Database is not upgrade-able");
+		// Delete old database, put in new
+		File dbFile = mContext.getDatabasePath(DB_NAME);
+		dbFile.delete();
+		copyDbToDbFolder();
 	}
 	
 	public static boolean checkDBFileValidity(File dbFile, String[] tables, String[] views, String[] indexes) {
